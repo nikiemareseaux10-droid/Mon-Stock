@@ -1,0 +1,21 @@
+name: mon_stock
+description: Mon Stock - gestion de stock hors ligne
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_inappwebview: ^6.1.5
+  path_provider: ^2.1.5
+  permission_handler: ^11.3.1
+  printing: ^5.13.4
+  share_plus: ^10.1.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/index.html

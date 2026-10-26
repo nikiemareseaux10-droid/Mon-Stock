@@ -1,0 +1,62 @@
+name: Construire l'APK Mon Stock
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Préparer le fichier HTML de l'application
+        run: |
+          mkdir -p assets
+          if [ ! -f assets/index.html ]; then
+            f=$(ls -1 *.html 2>/dev/null | head -n 1 || true)
+            if [ -n "$f" ]; then cp "$f" assets/index.html; fi
+          fi
+          test -f assets/index.html || { echo "::error::Ajoutez votre fichier HTML dans assets/index.html"; exit 1; }
+          ls -la assets
+
+      - name: Installer Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installer Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Générer le projet Android
+        run: |
+          cp pubspec.yaml /tmp/pubspec.yaml
+          cp lib/main.dart /tmp/main.dart
+          flutter create . --platforms=android --project-name mon_stock --org com.monstock
+          cp /tmp/pubspec.yaml pubspec.yaml
+          cp /tmp/main.dart lib/main.dart
+          rm -rf test analysis_options.yaml
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.CAMERA"/>\n    <uses-feature android:name="android.hardware.camera" android:required="false"/>\n    <application#' "$M"
+          sed -i 's#android:label="[^"]*"#android:label="Mon Stock"#' "$M"
+
+      - name: Installer les dépendances
+        run: flutter pub get
+
+      - name: Construire l'APK
+        run: flutter build apk --release
+
+      - name: Publier l'APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mon-Stock-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
