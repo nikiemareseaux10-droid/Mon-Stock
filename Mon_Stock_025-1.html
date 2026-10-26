@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gestion de stock hors ligne</title>
+<style>
+:root{--bg:#f4f6f8;--panel:#fff;--ink:#182230;--muted:#6b7280;--line:#e4e8ee;--green:#176b50;--green2:#e3f4ec;--orange:#e78b27;--red:#c43d4b;--blue:#2864c5;--shadow:0 8px 28px #172b4510}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:9px;padding:10px 13px;font-weight:650}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #82b4f8;outline-offset:1px}.primary{background:var(--green);color:#fff}.secondary{background:#eef2f6;color:#263547}.danger{background:#fff0f1;color:var(--red)}.small{padding:6px 9px;font-size:12px}.app{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr)}aside{background:#142b25;color:#edf8f2;padding:22px 14px;display:flex;flex-direction:column;gap:20px}.brand{display:flex;align-items:center;gap:11px;padding:3px 8px 18px;border-bottom:1px solid #ffffff20}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#f4b33e,#e78520);display:grid;place-items:center;color:#172a23;font-weight:900;font-size:23px}.brand h1{font-size:20px;margin:0;letter-spacing:-.5px}.brand p{margin:2px 0 0;color:#b8cec4;font-size:11px}.nav{display:grid;gap:5px}.nav button{background:transparent;color:#c6d9d0;text-align:left;display:flex;align-items:center;gap:12px;padding:12px 13px;font-weight:550}.nav button.active,.nav button:hover{background:#24463b;color:white}.nav .ico{width:21px;text-align:center;font-size:17px}.aside-foot{margin-top:auto;border-top:1px solid #ffffff20;padding:14px 8px 0;color:#b8cec4;font-size:11px}.offline{display:inline-flex;align-items:center;gap:6px;background:#23483a;border-radius:20px;padding:6px 9px;color:#c9f4d9;margin-bottom:8px}.dot{width:7px;height:7px;background:#65d69a;border-radius:50%}main{min-width:0}.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:15px}.topbar h2{font-size:19px;margin:0}.topbar p{margin:3px 0 0;color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px;align-items:center}.content{padding:25px 28px;max-width:1600px;margin:auto}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:20px}.page-head h2{font-size:24px;margin:0 0 5px;letter-spacing:-.6px}.page-head p{margin:0;color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.stat{padding:18px}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.stat-icon{width:35px;height:35px;border-radius:10px;background:#e8f4ef;display:grid;place-items:center;color:var(--green);font-size:17px}.stat strong{display:block;font-size:26px;letter-spacing:-.7px;margin:11px 0 3px}.stat small{color:var(--muted)}.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.85fr);gap:17px;margin-bottom:18px}.panel{padding:19px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}.panel-head h3{margin:0;font-size:16px}.muted{color:var(--muted)}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;white-space:nowrap}th{text-align:left;color:#748091;font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;background:#f8fafb}th,td{padding:12px 13px;border-bottom:1px solid #edf0f3}td{font-size:13px}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fbfcfd}.pill{display:inline-flex;align-items:center;border-radius:20px;padding:4px 8px;font-size:11px;font-weight:700}.pill.ok{background:#e4f7ec;color:#167548}.pill.warn{background:#fff3db;color:#9b6300}.pill.low{background:#ffe9e9;color:#b82d3c}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#526070}.field input,.field select,.field textarea,.search{width:100%;border:1px solid #dbe1e8;border-radius:9px;background:#fff;padding:10px 11px;color:var(--ink);min-width:0}.search{max-width:340px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.formgrid .full{grid-column:1/-1}.modal-back{position:fixed;inset:0;background:#10231dc4;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal-back.show{display:flex}.modal{width:min(700px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:17px;padding:23px;box-shadow:0 25px 80px #0004}.modal h3{font-size:20px;margin:0 0 5px}.modal .sub{color:var(--muted);margin:0 0 20px}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.empty{padding:35px 15px;text-align:center;color:var(--muted)}.empty b{display:block;color:var(--ink);margin-bottom:4px}.barline{display:flex;align-items:center;gap:12px;margin:13px 0}.barlabel{width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.barbg{height:9px;background:#edf1f4;border-radius:9px;flex:1;overflow:hidden}.barfill{height:100%;background:var(--green);border-radius:9px}.barval{width:50px;text-align:right;font-size:12px;color:var(--muted)}.notice{border:1px solid #f2d9a6;background:#fff9e9;color:#805700;border-radius:10px;padding:12px 14px;margin-bottom:16px}.help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.help-item{padding:16px;border:1px solid var(--line);border-radius:12px}.help-item h4{margin:0 0 7px}.help-item p{margin:0;color:var(--muted);line-height:1.6}.footer-note{font-size:11px;color:var(--muted);margin-top:18px}.hide{display:none!important}.toast{position:fixed;right:20px;bottom:20px;background:#172b25;color:white;padding:13px 17px;border-radius:10px;box-shadow:var(--shadow);z-index:20;display:none}.toast.show{display:block}.kpi-label{font-size:11px;color:var(--muted)}.report-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:17px}.reportbox{border:1px solid var(--line);padding:15px;border-radius:12px}.reportbox strong{display:block;font-size:22px;margin-top:7px}.mobile-menu{display:none}
+@media(max-width:1050px){.app{grid-template-columns:205px minmax(0,1fr)}.content{padding:20px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}.topbar{padding:0 20px}}
+@media(max-width:720px){.app{display:block}aside{display:none;position:fixed;z-index:8;inset:0 auto 0 0;width:260px;box-shadow:0 0 0 100vmax #10231d80}.aside-open aside{display:flex}.topbar{height:67px;padding:0 15px}.mobile-menu{display:inline-block}.top-actions .secondary{display:none}.content{padding:18px 13px}.page-head{align-items:flex-start}.page-head h2{font-size:21px}.cards{gap:9px}.stat{padding:13px}.stat strong{font-size:21px}.stat-top{font-size:11px}.stat-icon{width:29px;height:29px}.formgrid,.help-grid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.panel{padding:13px}.report-cards{grid-template-columns:1fr}.search{max-width:none;flex:1}.toolbar{gap:7px}.top-actions .primary{padding:9px 10px;font-size:12px}}
+@media print{aside,.topbar,.toolbar,.page-head button,.no-print{display:none!important}.app{display:block}.content{padding:0}.panel,.card{box-shadow:none;break-inside:avoid}.page{display:block!important}body{background:white}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<aside>
+  <div class="brand"><div class="logo">M</div><div><h1>Mon Stock</h1><p>GESTION INTELLIGENTE</p></div></div>
+  <div class="nav" id="nav">
+    <button class="active" data-page="dashboard"><span class="ico">▦</span> Tableau de bord</button>
+    <button data-page="products"><span class="ico">▤</span> Produits & stock</button>
+    <button data-page="movements"><span class="ico">⇄</span> Entrées / sorties</button>
+    <button data-page="categories"><span class="ico">▧</span> Catégories</button>
+    <button data-page="suppliers"><span class="ico">♙</span> Fournisseurs</button>
+    <button data-page="clients"><span class="ico">♧</span> Clients</button>
+    <button data-page="sales"><span class="ico">▣</span> Ventes & factures</button>
+    <button data-page="lots"><span class="ico">◷</span> Lots & péremption</button>
+    <button data-page="warehouses"><span class="ico">⌂</span> Entrepôts</button>
+    <button data-page="orders"><span class="ico">⇧</span> Commandes fournisseurs</button>
+    <button data-page="users"><span class="ico">♙</span> Utilisateurs & journal</button>
+    <button data-page="reports"><span class="ico">▥</span> Rapports & inventaire</button>
+    <button data-page="settings"><span class="ico">⚙</span> Paramètres & sauvegarde</button>
+    <button data-page="help"><span class="ico">?</span> Aide & guide</button>
+  </div>
+  <div class="aside-foot"><div class="offline"><span class="dot"></span> Mode hors ligne actif</div><div>Vos données restent sur cet appareil.</div><div style="margin-top:7px">Mon Stock · Version 1.0</div></div>
+</aside>
+<main>
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:10px"><button class="secondary mobile-menu" onclick="document.body.classList.toggle('aside-open')">☰</button><div><h2 id="topTitle">Tableau de bord</h2><p id="today"></p></div></div>
+  <div class="top-actions"><button class="secondary" onclick="exportData()">⇩ Sauvegarder</button><button class="primary" onclick="openProduct()">＋ Nouveau produit</button></div>
+</header>
+<div class="content">
+<section class="page" id="page-dashboard">
+  <div class="page-head"><div><h2>Vue d'ensemble</h2><p>Suivez vos stocks, leur valeur et les mouvements récents.</p></div><button class="secondary" onclick="window.print()">Imprimer le résumé</button></div>
+  <div id="alerts"></div>
+  <div class="cards" id="stats"></div>
+  <div class="grid2">
+    <div class="panel"><div class="panel-head"><h3>Derniers mouvements</h3><button class="secondary small" onclick="go('movements')">Tout voir →</button></div><div class="table-wrap" id="recentMovements"></div></div>
+    <div class="panel"><div class="panel-head"><h3>Stock par catégorie</h3><span class="muted" style="font-size:11px">Quantités disponibles</span></div><div id="categoryBars"></div></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Produits à surveiller</h3><button class="secondary small" onclick="go('products')">Gérer le stock →</button></div><div class="table-wrap" id="lowProducts"></div></div>
+</section>
+<section class="page hide" id="page-products">
+  <div class="page-head"><div><h2>Produits & stock</h2><p>Catalogue, références, prix d'achat et de vente, quantités et seuils d'alerte.</p></div><button class="primary" onclick="openProduct()">＋ Ajouter un produit</button></div>
+  <div class="toolbar"><input class="search" id="productSearch" placeholder="Rechercher nom, référence, catégorie…" oninput="renderProducts()"><select id="categoryFilter" onchange="renderProducts()" style="max-width:210px;padding:10px;border:1px solid #dbe1e8;border-radius:9px"><option value="">Toutes les catégories</option></select><select id="stockFilter" onchange="renderProducts()" style="max-width:180px;padding:10px;border:1px solid #dbe1e8;border-radius:9px"><option value="">Tous les niveaux</option><option value="low">Stock bas</option><option value="out">Rupture</option><option value="ok">Stock normal</option></select><button class="secondary" onclick="exportProductsCSV()">Exporter CSV</button></div>
+  <div class="panel"><div class="table-wrap" id="productsTable"></div></div>
+</section>
+<section class="page hide" id="page-movements">
+  <div class="page-head"><div><h2>Entrées & sorties</h2><p>Enregistrez chaque réception, vente, retour, perte ou correction d'inventaire.</p></div><button class="primary" onclick="openMovement()">＋ Nouveau mouvement</button></div>
+  <div class="toolbar"><input class="search" id="movementSearch" placeholder="Rechercher produit, motif, référence…" oninput="renderMovements()"><select id="movementTypeFilter" onchange="renderMovements()" style="max-width:180px;padding:10px;border:1px solid #dbe1e8;border-radius:9px"><option value="">Tous les types</option><option value="Entrée">Entrée</option><option value="Sortie">Sortie</option><option value="Ajustement">Ajustement</option></select><button class="secondary" onclick="exportMovementsCSV()">Exporter CSV</button></div>
+  <div class="panel"><div class="table-wrap" id="movementsTable"></div></div>
+</section>
+<section class="page hide" id="page-categories">
+  <div class="page-head"><div><h2>Catégories</h2><p>Classez les articles pour retrouver et analyser plus facilement votre stock.</p></div><button class="primary" onclick="openCategory()">＋ Nouvelle catégorie</button></div>
+  <div class="panel"><div class="table-wrap" id="categoriesTable"></div></div>
+</section>
+<section class="page hide" id="page-suppliers">
+  <div class="page-head"><div><h2>Fournisseurs</h2><p>Centralisez les coordonnées de vos fournisseurs et les informations utiles.</p></div><button class="primary" onclick="openSupplier()">＋ Nouveau fournisseur</button></div>
+  <div class="toolbar"><input class="search" id="supplierSearch" placeholder="Rechercher un fournisseur…" oninput="renderSuppliers()"></div>
+  <div class="panel"><div class="table-wrap" id="suppliersTable"></div></div>
+</section>
+
+<section class="page hide" id="page-clients">
+  <div class="page-head"><div><h2>Clients</h2><p>Coordonnées et historique commercial des clients.</p></div><button class="primary" onclick="openClient()">＋ Nouveau client</button></div>
+  <div class="toolbar"><input class="search" id="clientSearch" placeholder="Rechercher un client…" oninput="renderClients()"></div>
+  <div class="panel"><div class="table-wrap" id="clientsTable"></div></div>
+</section>
+<section class="page hide" id="page-sales">
+  <div class="page-head"><div><h2>Ventes & factures</h2><p>Enregistrez les ventes, calculez la marge et imprimez les factures.</p></div><button class="primary" onclick="openSale()">＋ Nouvelle vente</button></div>
+  <div class="report-cards" id="salesStats"></div>
+  <div class="toolbar"><input class="search" id="salesSearch" placeholder="N° facture, client, produit…" oninput="renderSales()"><button class="secondary" onclick="exportSalesCSV()">Exporter les ventes CSV</button></div>
+  <div class="panel"><div class="table-wrap" id="salesTable"></div></div>
+</section>
+<section class="page hide" id="page-lots">
+  <div class="page-head"><div><h2>Lots & dates de péremption</h2><p>Suivez les lots, dates limites et quantités disponibles.</p></div><button class="primary" onclick="openLot()">＋ Ajouter un lot</button></div>
+  <div id="lotAlerts"></div><div class="panel"><div class="table-wrap" id="lotsTable"></div></div>
+</section>
+<section class="page hide" id="page-warehouses">
+  <div class="page-head"><div><h2>Entrepôts & magasins</h2><p>Définissez vos sites de stockage et transférez les quantités entre emplacements.</p></div><button class="primary" onclick="openWarehouse()">＋ Nouvel entrepôt</button></div>
+  <div class="panel"><div class="table-wrap" id="warehousesTable"></div></div>
+  <div class="panel" style="margin-top:16px"><div class="panel-head"><h3>Transfert de stock</h3></div><p class="muted">Le transfert conserve la quantité totale de l'article et enregistre une trace dans le journal. Les soldes par entrepôt sont suivis séparément.</p><button class="primary" onclick="openTransfer()">⇄ Transférer des produits</button><div class="table-wrap" id="warehouseBalances" style="margin-top:14px"></div></div>
+</section>
+<section class="page hide" id="page-orders">
+  <div class="page-head"><div><h2>Commandes fournisseurs</h2><p>Préparez des bons de commande et réceptionnez les marchandises.</p></div><button class="primary" onclick="openPurchaseOrder()">＋ Nouvelle commande</button></div>
+  <div class="panel"><div class="table-wrap" id="ordersTable"></div></div>
+</section>
+<section class="page hide" id="page-users">
+  <div class="page-head"><div><h2>Utilisateurs & journal d'activité</h2><p>Conservez une trace locale des opérations importantes et gérez les profils.</p></div><button class="primary" onclick="openUser()">＋ Nouvel utilisateur</button></div>
+  <div class="notice">Les profils et codes PIN de cette version servent à identifier les opérateurs sur cet appareil ; ils ne remplacent pas une authentification sécurisée côté serveur. Ne stockez pas de secrets sensibles ici.</div>
+  <div class="panel"><div class="panel-head"><h3>Utilisateurs</h3></div><div class="table-wrap" id="usersTable"></div></div>
+  <div class="panel" style="margin-top:16px"><div class="panel-head"><h3>Journal d'activité</h3><button class="secondary small" onclick="exportAuditCSV()">Exporter le journal</button></div><div class="table-wrap" id="auditTable"></div></div>
+</section>
+
+<section class="page hide" id="page-reports">
+  <div class="page-head"><div><h2>Rapports & inventaire</h2><p>Analysez la valeur du stock, les alertes et les mouvements enregistrés.</p></div><button class="secondary" onclick="window.print()">Imprimer le rapport</button></div>
+  <div class="report-cards" id="reportCards"></div>
+  <div class="grid2"><div class="panel"><div class="panel-head"><h3>Valeur du stock par catégorie</h3></div><div id="valueBars"></div></div><div class="panel"><div class="panel-head"><h3>Résumé des mouvements</h3></div><div id="movementSummary"></div></div></div>
+  <div class="panel"><div class="panel-head"><h3>Feuille d'inventaire</h3><button class="secondary small" onclick="exportProductsCSV()">Télécharger CSV</button></div><p class="muted" style="font-size:12px">Comparez les quantités théoriques avec les quantités physiques. Les corrections peuvent être saisies via « Nouveau mouvement » puis « Ajustement ».</p><div class="table-wrap" id="inventoryTable"></div></div>
+</section>
+<section class="page hide" id="page-settings">
+  <div class="page-head"><div><h2>Paramètres & sauvegarde</h2><p>Configurez les informations de votre activité et protégez vos données.</p></div></div>
+  <div class="panel" style="margin-bottom:17px"><div class="panel-head"><h3>Profil de l'entreprise</h3></div><p class="muted">Modifiez ici les coordonnées et l'identité visibles dans votre espace professionnel.</p><form id="businessProfileForm" onsubmit="saveBusinessProfile(event)"><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0"><img id="businessPhotoPreview" alt="Logo de l'entreprise" src="" style="width:76px;height:76px;border-radius:18px;object-fit:cover;background:#edf4f0;border:1px solid #d5e2db;display:none"><div><label for="businessPhotoInput" class="secondary" style="display:inline-block;cursor:pointer;padding:10px 14px;border-radius:10px">Ajouter / modifier le logo ou la photo</label><input id="businessPhotoInput" type="file" accept="image/*" onchange="previewBusinessPhoto(event)" style="display:none"><div class="muted" style="font-size:12px;margin-top:5px">Image facultative, 2 Mo maximum.</div></div></div><div class="grid2"><div class="field"><label>Nom de l'entreprise / boutique *</label><input id="profileBusinessName" required maxlength="80" placeholder="Ex. Ma boutique"></div><div class="field"><label>Nom du responsable</label><input id="profileManagerName" maxlength="80" placeholder="Votre nom"></div><div class="field"><label>Numéro de téléphone *</label><input id="profilePhone" type="tel" required maxlength="25" placeholder="Ex. 70 00 00 00"></div><div class="field"><label>Ville *</label><input id="profileCity" required maxlength="60" placeholder="Ex. Koudougou"></div><div class="field full"><label>Catégorie d'activité *</label><select id="profileCategory" required><option value="">Choisir un domaine</option><option>Commerce général</option><option>Alimentation / restaurant</option><option>Mode / textile</option><option>Électricité / électronique</option><option>Matériaux de construction</option><option>Pharmacie / santé</option><option>Agriculture / élevage</option><option>Cosmétiques / beauté</option><option>Informatique / téléphonie</option><option>Atelier / production</option><option>Transport / logistique</option><option>Autre</option></select></div></div><button class="primary" type="submit" style="margin-top:14px">Enregistrer le profil de l'entreprise</button></form></div>
+  <div class="grid2"><div class="panel"><div class="panel-head"><h3>Paramètres de gestion</h3></div><form id="settingsForm" onsubmit="saveSettings(event)"><div class="field" style="margin-bottom:13px"><label>Nom de l'entreprise / boutique</label><input id="businessName" placeholder="Ex. Ma boutique"></div><div class="field" style="margin-bottom:13px"><label>Nom du responsable</label><input id="managerName" placeholder="Votre nom"></div><div class="field" style="margin-bottom:13px"><label>Devise</label><select id="currency"><option value="FCFA">FCFA</option><option value="€">Euro (€)</option><option value="$">Dollar ($)</option><option value="GNF">Franc guinéen (GNF)</option><option value="CFA">CFA</option></select></div><div class="field" style="margin-bottom:13px"><label>Seuil d'alerte par défaut</label><input id="defaultThreshold" type="number" min="0" step="1"></div><button class="primary" type="submit">Enregistrer les paramètres</button></form></div>
+  <div class="panel"><div class="panel-head"><h3>Sauvegarde & restauration</h3></div><p class="muted">Les données sont conservées dans le stockage local du navigateur sur cet appareil. Exportez régulièrement une sauvegarde et conservez-la dans un endroit sûr.</p><div style="display:grid;gap:10px;margin-top:16px"><button class="primary" onclick="exportData()">⇩ Télécharger une sauvegarde complète (.json)</button><label class="secondary" style="display:block;text-align:center;cursor:pointer">⇧ Restaurer depuis une sauvegarde JSON<input type="file" accept=".json,application/json" onchange="importData(event)" style="display:none"></label><button class="secondary" onclick="exportProductsCSV()">Exporter le catalogue en CSV</button><button class="secondary" onclick="exportMovementsCSV()">Exporter les mouvements en CSV</button><button class="danger" onclick="resetDemo()">Réinitialiser les données</button></div><div class="notice" style="margin-top:15px">Important : vider les données du navigateur, désinstaller l'application ou changer d'appareil peut effacer l'accès aux données. La sauvegarde JSON est votre copie de sécurité.</div></div></div>
+  <div class="panel" style="margin-top:17px"><div class="panel-head"><h3>État du système</h3></div><div id="systemInfo"></div></div>
+</section>
+<section class="page hide" id="page-help">
+  <div class="page-head"><div><h2>Aide & guide d'utilisation</h2><p>Les fonctions essentielles pour bien démarrer avec Mon Stock.</p></div></div>
+  <div class="help-grid">
+    <div class="help-item"><h4>1. Ajouter les produits</h4><p>Dans « Produits & stock », ajoutez le nom, la référence (SKU), la catégorie, l'unité, les prix d'achat et de vente, la quantité de départ et le seuil d'alerte. La référence doit être unique.</p></div>
+    <div class="help-item"><h4>2. Enregistrer les mouvements</h4><p>Utilisez « Entrée » pour une réception ou un réapprovisionnement, « Sortie » pour une vente, une perte ou un usage interne, et « Ajustement » pour corriger le stock après inventaire. Les mouvements sont historisés.</p></div>
+    <div class="help-item"><h4>3. Lire les alertes</h4><p>Un produit est en rupture quand sa quantité est nulle. Il est en stock bas quand sa quantité est inférieure ou égale à son seuil d'alerte. Ajustez les seuils selon votre activité.</p></div>
+    <div class="help-item"><h4>4. Prix et valeur du stock</h4><p>La valeur du stock est estimée avec la quantité disponible multipliée par le prix d'achat. Le prix de vente sert à consulter la valeur de vente potentielle, ce n'est pas un bénéfice comptable.</p></div>
+    <div class="help-item"><h4>5. Sauvegarder les données</h4><p>Ouvrez « Paramètres & sauvegarde » et téléchargez le fichier JSON. Pour récupérer vos données, sélectionnez ensuite ce fichier dans « Restaurer ». Faites une sauvegarde régulièrement.</p></div>
+    <div class="help-item"><h4>6. Utilisation hors ligne</h4><p>Cette version fonctionne sans connexion Internet une fois le fichier ouvert. Elle n'envoie aucune donnée vers un serveur. Pour un usage durable, ouvrez-la dans le même navigateur et conservez des sauvegardes.</p></div>
+    <div class="help-item"><h4>7. Rechercher et exporter</h4><p>Les champs de recherche filtrent les tableaux. Les exports CSV peuvent être ouverts dans Excel ou LibreOffice pour des analyses complémentaires.</p></div>
+    <div class="help-item"><h4>8. Ventes et factures</h4><p>Créez une vente, choisissez un client et des produits, puis imprimez la facture. Le logiciel met à jour le stock et calcule une marge estimée à partir du prix d'achat enregistré.</p></div>
+    <div class="help-item"><h4>9. Lots et péremption</h4><p>Ajoutez les lots avec leur date limite. Les lots proches de la péremption sont signalés. Les sorties par vente consomment en priorité les lots qui expirent le plus tôt.</p></div>
+    <div class="help-item"><h4>10. Codes-barres</h4><p>Sur un navigateur compatible, ouvrez le scanner et autorisez l'accès à la caméra. La lecture dépend de la prise en charge des codes-barres par le navigateur et des permissions de l'appareil ; un champ de saisie manuelle reste disponible.</p></div>
+    <div class="help-item"><h4>11. Entrepôts et commandes</h4><p>Créez vos magasins, suivez les soldes par site, transférez des quantités et préparez des bons de commande fournisseurs. La réception d'une commande ajoute les produits au stock global.</p></div>
+    <div class="help-item"><h4>12. Utilisateurs et journal</h4><p>Les profils permettent d'identifier les opérateurs et le journal conserve les actions importantes. Le code PIN local n'est pas une sécurité forte : il ne faut pas y stocker d'informations confidentielles.</p></div>
+  </div>
+  <div class="footer-note">Conseil : commencez par créer vos catégories, puis vos fournisseurs et produits. Faites un inventaire de départ exact avant d'enregistrer vos premières ventes.</div>
+</section>
+</div>
+</main>
+</div>
+<div class="modal-back" id="modalBack" onclick="if(event.target===this)closeModal()"><div class="modal"><div id="modalContent"></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='monStockDataV1';
+const defaults={
+ settings:{businessName:'',managerName:'',currency:'FCFA',defaultThreshold:5},
+ categories:[{id:'cat-general',name:'Général',description:'Catégorie par défaut'}],
+ suppliers:[],products:[],movements:[]
+};
+let db=loadDB();
+function loadDB(){try{let x=JSON.parse(localStorage.getItem(KEY));return x&&x.products&&x.categories?x:structuredClone(defaults)}catch(e){return structuredClone(defaults)}}
+function saveDB(){localStorage.setItem(KEY,JSON.stringify(db));}
+function uid(prefix='id'){return prefix+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function money(n){return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2}).format(Number(n)||0)+' '+(db.settings.currency||'FCFA')}
+function dateFmt(v){if(!v)return '—';let d=new Date(v);return isNaN(d)?v:d.toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}
+function todayStr(){return new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+document.getElementById('today').textContent=todayStr();
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+function catName(id){return db.categories.find(c=>c.id===id)?.name||'Sans catégorie'}
+function prodName(id){return db.products.find(p=>p.id===id)?.name||'Produit supprimé'}
+function status(p){if(Number(p.qty)<=0)return ['Rupture','low'];if(Number(p.qty)<=Number(p.threshold))return ['Stock bas','warn'];return ['Normal','ok']}
+function tableEmpty(msg='Aucune donnée enregistrée'){return `<div class="empty"><b>${msg}</b>Ajoutez des données pour commencer.</div>`}
+function table(headers,rows){if(!rows.length)return tableEmpty();return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`}
+function go(page){document.body.classList.remove('aside-open');document.querySelectorAll('.page').forEach(e=>e.classList.add('hide'));document.getElementById('page-'+page).classList.remove('hide');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));let names={dashboard:'Tableau de bord',products:'Produits & stock',movements:'Entrées / sorties',categories:'Catégories',suppliers:'Fournisseurs',reports:'Rapports & inventaire',settings:'Paramètres & sauvegarde',help:'Aide & guide'};document.getElementById('topTitle').textContent=names[page]||'Mon Stock';if(page==='dashboard')renderDashboard();if(page==='products')renderProducts();if(page==='movements')renderMovements();if(page==='categories')renderCategories();if(page==='suppliers')renderSuppliers();if(page==='reports')renderReports();if(page==='settings')renderSettings();window.scrollTo(0,0)}
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+function renderDashboard(){
+ const qty=db.products.reduce((a,p)=>a+Number(p.qty||0),0),purchase=db.products.reduce((a,p)=>a+Number(p.qty||0)*Number(p.buy||0),0),sales=db.products.reduce((a,p)=>a+Number(p.qty||0)*Number(p.sell||0),0),low=db.products.filter(p=>Number(p.qty)<=Number(p.threshold)).length;
+ document.getElementById('stats').innerHTML=[
+ ['Produits référencés',db.products.length,'Articles dans le catalogue','▤'],
+ ['Quantité totale',new Intl.NumberFormat('fr-FR').format(qty),'Unités disponibles','▦'],
+ ['Valeur au prix d’achat',money(purchase),'Estimation du stock actuel','◈'],
+ ['Alertes de stock',low,low?'Articles à réapprovisionner':'Aucune alerte en cours','⚑']
+ ].map(([l,v,s,i])=>`<div class="card stat"><div class="stat-top"><span>${l}</span><span class="stat-icon">${i}</span></div><strong>${v}</strong><small>${s}</small></div>`).join('');
+ let lowProds=db.products.filter(p=>Number(p.qty)<=Number(p.threshold)).sort((a,b)=>Number(a.qty)-Number(b.qty));
+ document.getElementById('alerts').innerHTML=lowProds.length?`<div class="notice">⚠️ <b>${lowProds.length} alerte(s) de stock</b> : vérifiez les produits en rupture ou proches de la rupture ci-dessous.</div>`:'';
+ document.getElementById('recentMovements').innerHTML=table(['Date','Produit','Type','Quantité'],db.movements.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6).map(m=>`<tr><td>${dateFmt(m.date)}</td><td>${esc(prodName(m.productId))}</td><td><span class="pill ${m.type==='Entrée'?'ok':m.type==='Sortie'?'low':'warn'}">${esc(m.type)}</span></td><td>${m.type==='Sortie'?'−':m.type==='Entrée'?'+':''}${m.qty}</td></tr>`));
+ let cats=db.categories.map(c=>({name:c.name,n:db.products.filter(p=>p.categoryId===c.id).reduce((a,p)=>a+Number(p.qty||0),0)})).filter(c=>c.n>0).sort((a,b)=>b.n-a.n),max=Math.max(1,...cats.map(c=>c.n));
+ document.getElementById('categoryBars').innerHTML=cats.length?cats.map(c=>`<div class="barline"><div class="barlabel" title="${esc(c.name)}">${esc(c.name)}</div><div class="barbg"><div class="barfill" style="width:${c.n/max*100}%"></div></div><div class="barval">${c.n}</div></div>`).join(''):tableEmpty('Aucun stock par catégorie');
+ document.getElementById('lowProducts').innerHTML=table(['Produit','Référence','Catégorie','Stock','Seuil','État','Action'],lowProds.slice(0,8).map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${esc(p.ref||'—')}</td><td>${esc(catName(p.categoryId))}</td><td>${p.qty} ${esc(p.unit||'u')}</td><td>${p.threshold}</td><td><span class="pill ${status(p)[1]}">${status(p)[0]}</span></td><td><button class="secondary small" onclick="openMovement('${p.id}','Entrée')">Réapprovisionner</button></td></tr>`));
+}
+function fillCategoryFilters(){let options=db.categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');let f=document.getElementById('categoryFilter');if(f){let v=f.value;f.innerHTML='<option value="">Toutes les catégories</option>'+options;f.value=v}}
+function renderProducts(){fillCategoryFilters();let q=(document.getElementById('productSearch')?.value||'').toLowerCase(),cat=document.getElementById('categoryFilter')?.value||'',sf=document.getElementById('stockFilter')?.value||'';let ps=db.products.filter(p=>(!q||[p.name,p.ref,p.description,catName(p.categoryId)].some(x=>String(x||'').toLowerCase().includes(q)))&&(!cat||p.categoryId===cat)&&(!sf||(sf==='low'&&Number(p.qty)>0&&Number(p.qty)<=Number(p.threshold))||(sf==='out'&&Number(p.qty)<=0)||(sf==='ok'&&Number(p.qty)>Number(p.threshold))));document.getElementById('productsTable').innerHTML=table(['Produit / référence','Catégorie','Prix achat','Prix vente','Quantité','Seuil','État','Actions'],ps.map(p=>`<tr><td><b>${esc(p.name)}</b><br><span class="muted" style="font-size:11px">${esc(p.ref||'Sans référence')}</span></td><td>${esc(catName(p.categoryId))}</td><td>${money(p.buy)}</td><td>${money(p.sell)}</td><td><b>${p.qty}</b> ${esc(p.unit||'u')}</td><td>${p.threshold}</td><td><span class="pill ${status(p)[1]}">${status(p)[0]}</span></td><td><div style="display:flex;gap:5px"><button class="secondary small" onclick="openProduct('${p.id}')">Modifier</button><button class="secondary small" onclick="openMovement('${p.id}')">Mouvement</button><button class="danger small" onclick="deleteProduct('${p.id}')">×</button></div></td></tr>`))}
+function openProduct(id){let p=db.products.find(x=>x.id===id)||{id:'',name:'',ref:'',categoryId:db.categories[0]?.id||'',unit:'unité',buy:0,sell:0,qty:0,threshold:Number(db.settings.defaultThreshold)||5,description:'',location:'',barcode:''};showModal(`<h3>${id?'Modifier le produit':'Ajouter un produit'}</h3><p class="sub">Renseignez les informations essentielles de l'article.</p><form id="productForm" onsubmit="saveProduct(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Nom du produit *</label><input name="name" required value="${esc(p.name)}" placeholder="Ex. Câble électrique"></div><div class="field"><label>Référence / SKU *</label><input name="ref" required value="${esc(p.ref)}" placeholder="Ex. CAB-001"></div><div class="field"><label>Catégorie *</label><select name="categoryId" required>${db.categories.map(c=>`<option value="${esc(c.id)}" ${p.categoryId===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div><div class="field"><label>Unité de mesure</label><select name="unit">${['unité','pièce','paquet','carton','kg','g','litre','mètre','rouleau','sac','boîte','paire'].map(u=>`<option ${p.unit===u?'selected':''}>${u}</option>`).join('')}</select></div><div class="field"><label>Prix d'achat (${esc(db.settings.currency)})</label><input name="buy" type="number" min="0" step="0.01" value="${p.buy}" required></div><div class="field"><label>Prix de vente (${esc(db.settings.currency)})</label><input name="sell" type="number" min="0" step="0.01" value="${p.sell}" required></div><div class="field"><label>Quantité actuelle</label><input name="qty" type="number" min="0" step="0.001" value="${p.qty}" required ${id?'readonly title="Modifiez la quantité via un mouvement de stock"':''}></div><div class="field"><label>Seuil d'alerte</label><input name="threshold" type="number" min="0" step="0.001" value="${p.threshold}" required></div><div class="field"><label>Emplacement (rayon / étagère)</label><input name="location" value="${esc(p.location)}" placeholder="Ex. Rayon A-02"></div><div class="field"><label>Code-barres (facultatif)</label><input name="barcode" value="${esc(p.barcode)}"></div><div class="field full"><label>Description / notes</label><textarea name="description" rows="2" placeholder="Détails, modèle, couleur…">${esc(p.description)}</textarea></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary" type="submit">Enregistrer le produit</button></div></form>`)}
+function saveProduct(e,id){e.preventDefault();let f=new FormData(e.target),v=Object.fromEntries(f.entries());if(db.products.some(p=>p.ref.toLowerCase()===v.ref.trim().toLowerCase()&&p.id!==id)){toast('Cette référence existe déjà.');return}v.name=v.name.trim();v.ref=v.ref.trim();['buy','sell','qty','threshold'].forEach(k=>v[k]=Number(v[k]||0));if(id){let p=db.products.find(p=>p.id===id);Object.assign(p,v)}else{v.id=uid('prd');db.products.push(v);if(v.qty>0)db.movements.push({id:uid('mov'),productId:v.id,type:'Entrée',qty:v.qty,date:new Date().toISOString(),reason:'Stock initial',note:'Quantité initiale à la création'})}saveDB();closeModal();renderAll();go('products');toast('Produit enregistré.')}
+function deleteProduct(id){let p=db.products.find(x=>x.id===id);if(!p)return;if(!confirm(`Supprimer « ${p.name} » du catalogue ? L'historique des mouvements sera conservé.`))return;db.products=db.products.filter(x=>x.id!==id);saveDB();renderAll();toast('Produit supprimé du catalogue.')}
+function openMovement(productId='',type='Entrée'){if(!db.products.length){toast('Ajoutez d’abord un produit.');return}let p=db.products.find(x=>x.id===productId)||db.products[0];showModal(`<h3>Nouveau mouvement de stock</h3><p class="sub">Chaque mouvement met à jour la quantité disponible et est ajouté à l'historique.</p><form onsubmit="saveMovement(event)"><div class="formgrid"><div class="field full"><label>Produit *</label><select name="productId" required>${db.products.map(x=>`<option value="${x.id}" ${x.id===p.id?'selected':''}>${esc(x.name)} — ${esc(x.ref)} (stock : ${x.qty})</option>`).join('')}</select></div><div class="field"><label>Type de mouvement *</label><select name="type" id="movType" onchange="document.getElementById('adjustHelp').classList.toggle('hide',this.value!=='Ajustement')"><option ${type==='Entrée'?'selected':''}>Entrée</option><option ${type==='Sortie'?'selected':''}>Sortie</option><option ${type==='Ajustement'?'selected':''}>Ajustement</option></select></div><div class="field"><label>Quantité *</label><input name="qty" type="number" min="0.001" step="0.001" required value="1"></div><div class="field"><label>Motif</label><select name="reason"><option>Réapprovisionnement</option><option>Vente</option><option>Retour client</option><option>Retour fournisseur</option><option>Perte / casse</option><option>Usage interne</option><option>Inventaire</option><option>Autre</option></select></div><div class="field"><label>Date du mouvement</label><input name="date" type="datetime-local" value="${new Date().toISOString().slice(0,16)}" required></div><div class="field full hide" id="adjustHelp"><div class="notice">Pour un ajustement, la quantité saisie représente le stock final compté, et non la différence.</div></div><div class="field full"><label>Note / document (facultatif)</label><input name="note" placeholder="N° facture, commentaire…"></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary" type="submit">Valider le mouvement</button></div></form>`)}
+function saveMovement(e){e.preventDefault();let f=Object.fromEntries(new FormData(e.target).entries()),p=db.products.find(x=>x.id===f.productId),q=Number(f.qty);if(!p||q<=0)return;if(f.type==='Sortie'&&q>Number(p.qty)){toast(`Stock insuffisant : ${p.qty} ${p.unit} disponible(s).`);return}if(f.type==='Entrée')p.qty=Number(p.qty)+q;else if(f.type==='Sortie')p.qty=Number(p.qty)-q;else p.qty=q;db.movements.push({id:uid('mov'),productId:p.id,type:f.type,qty:q,date:new Date(f.date).toISOString(),reason:f.reason,note:f.note||''});saveDB();closeModal();renderAll();go('movements');toast('Mouvement enregistré.')}
+function renderMovements(){let q=(document.getElementById('movementSearch')?.value||'').toLowerCase(),type=document.getElementById('movementTypeFilter')?.value||'',ms=db.movements.filter(m=>(!type||m.type===type)&&(!q||[prodName(m.productId),m.reason,m.note,m.type].some(x=>String(x||'').toLowerCase().includes(q)))).sort((a,b)=>new Date(b.date)-new Date(a.date));document.getElementById('movementsTable').innerHTML=table(['Date','Produit','Type','Quantité','Motif','Note'],ms.map(m=>`<tr><td>${dateFmt(m.date)}</td><td><b>${esc(prodName(m.productId))}</b></td><td><span class="pill ${m.type==='Entrée'?'ok':m.type==='Sortie'?'low':'warn'}">${esc(m.type)}</span></td><td>${m.type==='Sortie'?'−':m.type==='Entrée'?'+':''}${m.qty}</td><td>${esc(m.reason||'—')}</td><td>${esc(m.note||'—')}</td></tr>`))}
+function openCategory(id){let c=db.categories.find(x=>x.id===id)||{id:'',name:'',description:''};showModal(`<h3>${id?'Modifier la catégorie':'Nouvelle catégorie'}</h3><p class="sub">Organisez les produits selon votre activité.</p><form onsubmit="saveCategory(event,'${id||''}')"><div class="formgrid"><div class="field full"><label>Nom de la catégorie *</label><input name="name" required value="${esc(c.name)}" placeholder="Ex. Matériel électrique"></div><div class="field full"><label>Description</label><textarea name="description" rows="3">${esc(c.description)}</textarea></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Enregistrer</button></div></form>`)}
+function saveCategory(e,id){e.preventDefault();let v=Object.fromEntries(new FormData(e.target).entries());v.name=v.name.trim();if(db.categories.some(c=>c.name.toLowerCase()===v.name.toLowerCase()&&c.id!==id)){toast('Cette catégorie existe déjà.');return}if(id)Object.assign(db.categories.find(c=>c.id===id),v);else db.categories.push({...v,id:uid('cat')});saveDB();closeModal();renderAll();go('categories');toast('Catégorie enregistrée.')}
+function renderCategories(){document.getElementById('categoriesTable').innerHTML=table(['Catégorie','Description','Nombre de produits','Quantité totale','Actions'],db.categories.map(c=>{let ps=db.products.filter(p=>p.categoryId===c.id);return `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.description||'—')}</td><td>${ps.length}</td><td>${ps.reduce((a,p)=>a+Number(p.qty),0)}</td><td><button class="secondary small" onclick="openCategory('${c.id}')">Modifier</button> <button class="danger small" onclick="deleteCategory('${c.id}')">Supprimer</button></td></tr>`}))}
+function deleteCategory(id){let c=db.categories.find(x=>x.id===id);if(db.products.some(p=>p.categoryId===id)){toast('Cette catégorie contient des produits. Réaffectez-les avant suppression.');return}if(!confirm(`Supprimer la catégorie « ${c.name} » ?`))return;db.categories=db.categories.filter(x=>x.id!==id);saveDB();renderAll();toast('Catégorie supprimée.')}
+function openSupplier(id){let s=db.suppliers.find(x=>x.id===id)||{id:'',name:'',contact:'',phone:'',email:'',address:'',notes:''};showModal(`<h3>${id?'Modifier le fournisseur':'Nouveau fournisseur'}</h3><p class="sub">Enregistrez les coordonnées utiles pour les commandes et réapprovisionnements.</p><form onsubmit="saveSupplier(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Nom / entreprise *</label><input name="name" required value="${esc(s.name)}"></div><div class="field"><label>Contact</label><input name="contact" value="${esc(s.contact)}"></div><div class="field"><label>Téléphone</label><input name="phone" value="${esc(s.phone)}"></div><div class="field"><label>E-mail</label><input name="email" type="email" value="${esc(s.email)}"></div><div class="field full"><label>Adresse</label><input name="address" value="${esc(s.address)}"></div><div class="field full"><label>Notes</label><textarea name="notes" rows="2">${esc(s.notes)}</textarea></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Enregistrer</button></div></form>`)}
+function saveSupplier(e,id){e.preventDefault();let v=Object.fromEntries(new FormData(e.target).entries());if(id)Object.assign(db.suppliers.find(s=>s.id===id),v);else db.suppliers.push({...v,id:uid('sup')});saveDB();closeModal();renderAll();go('suppliers');toast('Fournisseur enregistré.')}
+function renderSuppliers(){let q=(document.getElementById('supplierSearch')?.value||'').toLowerCase(),ss=db.suppliers.filter(s=>[s.name,s.contact,s.phone,s.email].some(x=>String(x||'').toLowerCase().includes(q)));document.getElementById('suppliersTable').innerHTML=table(['Fournisseur','Contact','Téléphone','E-mail','Adresse','Actions'],ss.map(s=>`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.contact||'—')}</td><td>${esc(s.phone||'—')}</td><td>${esc(s.email||'—')}</td><td>${esc(s.address||'—')}</td><td><button class="secondary small" onclick="openSupplier('${s.id}')">Modifier</button> <button class="danger small" onclick="deleteSupplier('${s.id}')">×</button></td></tr>`))}
+function deleteSupplier(id){if(!confirm('Supprimer ce fournisseur ?'))return;db.suppliers=db.suppliers.filter(s=>s.id!==id);saveDB();renderAll();toast('Fournisseur supprimé.')}
+function renderReports(){let qty=db.products.reduce((a,p)=>a+Number(p.qty),0),cost=db.products.reduce((a,p)=>a+Number(p.qty)*Number(p.buy),0),retail=db.products.reduce((a,p)=>a+Number(p.qty)*Number(p.sell),0),low=db.products.filter(p=>Number(p.qty)<=Number(p.threshold)).length;document.getElementById('reportCards').innerHTML=[['Valeur au prix d’achat',money(cost)],['Valeur potentielle au prix de vente',money(retail)],['Articles en alerte',low]].map(x=>`<div class="reportbox"><span class="kpi-label">${x[0]}</span><strong>${x[1]}</strong></div>`).join('');let cats=db.categories.map(c=>({name:c.name,n:db.products.filter(p=>p.categoryId===c.id).reduce((a,p)=>a+Number(p.qty)*Number(p.buy),0)})).filter(c=>c.n>0).sort((a,b)=>b.n-a.n),max=Math.max(1,...cats.map(c=>c.n));document.getElementById('valueBars').innerHTML=cats.length?cats.map(c=>`<div class="barline"><div class="barlabel" title="${esc(c.name)}">${esc(c.name)}</div><div class="barbg"><div class="barfill" style="width:${c.n/max*100}%"></div></div><div class="barval">${money(c.n)}</div></div>`).join(''):tableEmpty('Aucune valeur à afficher');let count=t=>db.movements.filter(m=>m.type===t).length;document.getElementById('movementSummary').innerHTML=[['Mouvements enregistrés',db.movements.length],['Entrées',count('Entrée')],['Sorties',count('Sortie')],['Ajustements',count('Ajustement')],['Quantité totale actuelle',qty]].map(x=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #edf0f3"><span class="muted">${x[0]}</span><b>${x[1]}</b></div>`).join('');document.getElementById('inventoryTable').innerHTML=table(['Référence','Produit','Catégorie','Emplacement','Stock théorique','Prix achat','Valeur achat','Comptage physique'],db.products.map(p=>`<tr><td>${esc(p.ref)}</td><td><b>${esc(p.name)}</b></td><td>${esc(catName(p.categoryId))}</td><td>${esc(p.location||'—')}</td><td>${p.qty} ${esc(p.unit)}</td><td>${money(p.buy)}</td><td>${money(p.qty*p.buy)}</td><td>________</td></tr>`))}
+function renderSettings(){let s=db.settings;['businessName','managerName','currency','defaultThreshold'].forEach(k=>{let el=document.getElementById(k);if(el)el.value=s[k]??''});const p=activeProfile();if(p){const vals={profileBusinessName:p.name,profileManagerName:p.manager||'',profilePhone:p.phone||'',profileCity:p.city||'',profileCategory:p.category||''};Object.entries(vals).forEach(([k,v])=>{const el=document.getElementById(k);if(el)el.value=v});const im=document.getElementById('businessPhotoPreview');if(im){im.src=p.photo||'';im.style.display=p.photo?'block':'none'}}document.getElementById('systemInfo').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px"><div class="reportbox"><span class="kpi-label">Produits</span><strong>${db.products.length}</strong></div><div class="reportbox"><span class="kpi-label">Catégories</span><strong>${db.categories.length}</strong></div><div class="reportbox"><span class="kpi-label">Mouvements</span><strong>${db.movements.length}</strong></div><div class="reportbox"><span class="kpi-label">Fournisseurs</span><strong>${db.suppliers.length}</strong></div><div class="reportbox"><span class="kpi-label">Stockage</span><strong style="font-size:15px">Local navigateur</strong></div></div>`}
+let businessPhotoDraft='';
+function previewBusinessPhoto(e){const f=e.target.files&&e.target.files[0];if(!f)return;if(f.size>2*1024*1024){alert('Choisissez une image de moins de 2 Mo.');e.target.value='';return}const rd=new FileReader();rd.onload=()=>{businessPhotoDraft=String(rd.result||'');const im=document.getElementById('businessPhotoPreview');if(im){im.src=businessPhotoDraft;im.style.display='block'}};rd.readAsDataURL(f)}
+function saveBusinessProfile(e){e.preventDefault();const profiles=getProfiles(),p=activeProfile();if(!p){toast('Aucun profil entreprise actif. Créez ou connectez-vous à un compte.');return}p.name=document.getElementById('profileBusinessName').value.trim();p.manager=document.getElementById('profileManagerName').value.trim();p.phone=document.getElementById('profilePhone').value.trim();p.city=document.getElementById('profileCity').value.trim();p.category=document.getElementById('profileCategory').value;if(businessPhotoDraft)p.photo=businessPhotoDraft;const i=profiles.findIndex(x=>x.id===p.id);if(i>=0)profiles[i]=p;setProfiles(profiles);db.settings={...(db.settings||{}),businessName:p.name,managerName:p.manager};saveDB();applyProfile(p);renderAll();toast('Profil de l’entreprise mis à jour.')}
+function saveSettings(e){e.preventDefault();db.settings={businessName:document.getElementById('businessName').value,managerName:document.getElementById('managerName').value,currency:document.getElementById('currency').value,defaultThreshold:Number(document.getElementById('defaultThreshold').value)||0};saveDB();const p=activeProfile();if(p){p.name=db.settings.businessName.trim()||p.name;p.manager=db.settings.managerName.trim();const a=getProfiles(),i=a.findIndex(x=>x.id===p.id);if(i>=0){a[i]=p;setProfiles(a);applyProfile(p)}}renderAll();toast('Paramètres enregistrés.') }
+function showModal(html){document.getElementById('modalContent').innerHTML=html;document.getElementById('modalBack').classList.add('show')}
+function closeModal(){document.getElementById('modalBack').classList.remove('show')}
+function exportData(){let blob=new Blob([JSON.stringify({...db,exportedAt:new Date().toISOString(),app:'Mon Stock'},null,2)],{type:'application/json'});downloadBlob(blob,'mon-stock-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json');toast('Sauvegarde téléchargée.')}
+function importData(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.products||!x.categories||!x.movements)throw new Error('Format');if(!confirm('La restauration remplacera les données actuelles. Continuer ?'))return;db={settings:{...defaults.settings,...x.settings},categories:x.categories,suppliers:x.suppliers||[],products:x.products,movements:x.movements};saveDB();renderAll();go('dashboard');toast('Sauvegarde restaurée.')}catch(err){alert('Fichier invalide ou incompatible avec Mon Stock.')}e.target.value=''};r.readAsText(file)}
+function csvEscape(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+function exportCSV(name,headers,rows){let content='\ufeff'+[headers,...rows].map(r=>r.map(csvEscape).join(';')).join('\r\n');downloadBlob(new Blob([content],{type:'text/csv;charset=utf-8'}),name)}
+function exportProductsCSV(){exportCSV('mon-stock-produits.csv',['Référence','Nom','Catégorie','Unité','Quantité','Seuil','Prix achat','Prix vente','Valeur achat','Emplacement','Code-barres','Description'],db.products.map(p=>[p.ref,p.name,catName(p.categoryId),p.unit,p.qty,p.threshold,p.buy,p.sell,p.qty*p.buy,p.location,p.barcode,p.description]));toast('Catalogue exporté.')}
+function exportMovementsCSV(){exportCSV('mon-stock-mouvements.csv',['Date','Produit','Référence','Type','Quantité','Motif','Note'],db.movements.map(m=>[dateFmt(m.date),prodName(m.productId),db.products.find(p=>p.id===m.productId)?.ref||'',m.type,m.qty,m.reason,m.note]));toast('Mouvements exportés.')}
+function downloadBlob(blob,name){let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function resetDemo(){if(!confirm('ATTENTION : cette action efface les produits, catégories, fournisseurs et mouvements enregistrés dans ce navigateur. Avez-vous une sauvegarde ?'))return;if(!confirm('Confirmer la réinitialisation définitive ?'))return;db=structuredClone(defaults);saveDB();renderAll();go('dashboard');toast('Données réinitialisées.')}
+function renderAll(){renderDashboard();renderProducts();renderMovements();renderCategories();renderSuppliers();renderReports();renderSettings()}
+window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+renderAll();
+</script>
+
+<script>
+/* Mon Stock 2.0 — extensions hors ligne */
+db.clients = db.clients || [];
+db.sales = db.sales || [];
+db.lots = db.lots || [];
+db.warehouses = db.warehouses || [{id:'wh-main',name:'Magasin principal',address:'',manager:''}];
+db.warehouseStock = db.warehouseStock || {};
+db.orders = db.orders || [];
+db.users = db.users || [{id:'usr-admin',name:'Administrateur',role:'Administrateur',pin:'',active:true}];
+db.audit = db.audit || [];
+db.currentUser = db.currentUser || 'usr-admin';
+function audit(action,detail){db.audit.unshift({id:uid('aud'),date:new Date().toISOString(),user:db.users.find(u=>u.id===db.currentUser)?.name||'Administrateur',action,detail});db.audit=db.audit.slice(0,1500);saveDB()}
+function newNo(prefix,arr,field){return prefix+'-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(arr.length+1).padStart(4,'0')}
+function nameClient(id){return db.clients.find(c=>c.id===id)?.name||'Client de passage'}
+function nameWarehouse(id){return db.warehouses.find(w=>w.id===id)?.name||'Magasin principal'}
+function initWarehouseBalances(){
+  db.products.forEach(p=>{
+    if(!db.warehouseStock[p.id]){
+      db.warehouseStock[p.id]={};
+      const wid=db.warehouses[0]?.id||'wh-main';
+      db.warehouseStock[p.id][wid]=Number(p.qty)||0;
+    }
+  });
+}
+initWarehouseBalances(); saveDB();
+const baseGo=go;
+go=function(page){
+  const names={clients:'Clients',sales:'Ventes & factures',lots:'Lots & péremption',warehouses:'Entrepôts',orders:'Commandes fournisseurs',users:'Utilisateurs & journal'};
+  if(!names[page])return baseGo(page);
+  document.body.classList.remove('aside-open');
+  document.querySelectorAll('.page').forEach(e=>e.classList.add('hide'));
+  document.getElementById('page-'+page).classList.remove('hide');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+  document.getElementById('topTitle').textContent=names[page];
+  ({clients:renderClients,sales:renderSales,lots:renderLots,warehouses:renderWarehouses,orders:renderOrders,users:renderUsers})[page]();
+  window.scrollTo(0,0);
+};
+const baseRenderAll=renderAll;
+renderAll=function(){baseRenderAll();renderClients();renderSales();renderLots();renderWarehouses();renderOrders();renderUsers()};
+function logAndSave(action,detail){audit(action,detail);saveDB()}
+function renderClients(){const el=document.getElementById('clientsTable');if(!el)return;let q=(document.getElementById('clientSearch')?.value||'').toLowerCase();let arr=db.clients.filter(c=>[c.name,c.phone,c.email,c.address].some(x=>String(x||'').toLowerCase().includes(q)));el.innerHTML=table(['Nom','Téléphone','E-mail','Adresse','Ventes','Total dépensé','Actions'],arr.map(c=>{let ss=db.sales.filter(s=>s.clientId===c.id);return `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.phone||'—')}</td><td>${esc(c.email||'—')}</td><td>${esc(c.address||'—')}</td><td>${ss.length}</td><td>${money(ss.reduce((a,s)=>a+s.total,0))}</td><td><button class="secondary small" onclick="openClient('${c.id}')">Modifier</button> <button class="danger small" onclick="deleteClient('${c.id}')">×</button></td></tr>`}))}
+function openClient(id){let c=db.clients.find(x=>x.id===id)||{id:'',name:'',phone:'',email:'',address:'',notes:''};showModal(`<h3>${id?'Modifier le client':'Nouveau client'}</h3><p class="sub">Les informations client sont enregistrées uniquement sur cet appareil.</p><form onsubmit="saveClient(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Nom / entreprise *</label><input name="name" required value="${esc(c.name)}"></div><div class="field"><label>Téléphone</label><input name="phone" value="${esc(c.phone)}"></div><div class="field"><label>E-mail</label><input name="email" type="email" value="${esc(c.email)}"></div><div class="field"><label>Adresse</label><input name="address" value="${esc(c.address)}"></div><div class="field full"><label>Notes</label><textarea name="notes">${esc(c.notes)}</textarea></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Enregistrer</button></div></form>`)}
+function saveClient(e,id){e.preventDefault();let v=Object.fromEntries(new FormData(e.target).entries());if(id)Object.assign(db.clients.find(c=>c.id===id),v);else db.clients.push({...v,id:uid('cli')});logAndSave(id?'Modification client':'Création client',v.name);closeModal();renderAll();go('clients');toast('Client enregistré.')}
+function deleteClient(id){if(db.sales.some(s=>s.clientId===id)){toast('Ce client est lié à des ventes et ne peut pas être supprimé.');return}if(!confirm('Supprimer ce client ?'))return;let c=db.clients.find(x=>x.id===id);db.clients=db.clients.filter(x=>x.id!==id);logAndSave('Suppression client',c?.name);renderAll()}
+function openSale(){if(!db.products.length){toast('Ajoutez d’abord un produit.');return}const opts=db.products.map(p=>`<option value="${p.id}">${esc(p.name)} — stock ${p.qty} — ${money(p.sell)}</option>`).join('');showModal(`<h3>Nouvelle vente</h3><p class="sub">Une facture sera créée et le stock sera décrémenté après validation.</p><form id="saleForm" onsubmit="saveSale(event)"><div class="formgrid"><div class="field"><label>Client</label><select name="clientId"><option value="">Client de passage</option>${db.clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div><div class="field"><label>Date</label><input name="date" type="datetime-local" required value="${new Date().toISOString().slice(0,16)}"></div><div class="field"><label>Produit *</label><select name="productId" id="saleProduct" onchange="updateSaleTotal()" required>${opts}</select></div><div class="field"><label>Quantité *</label><input name="qty" id="saleQty" type="number" min="0.001" step="0.001" value="1" required oninput="updateSaleTotal()"></div><div class="field"><label>Prix unitaire de vente</label><input name="price" id="salePrice" type="number" min="0" step="0.01" value="${db.products[0].sell}" required oninput="updateSaleTotal()"></div><div class="field"><label>Remise totale (${esc(db.settings.currency)})</label><input name="discount" id="saleDiscount" type="number" min="0" step="0.01" value="0" oninput="updateSaleTotal()"></div><div class="field full"><div class="reportbox"><span class="kpi-label">Total estimé</span><strong id="saleTotalPreview">${money(db.products[0].sell)}</strong><span class="muted" id="saleProfitPreview"></span></div></div><div class="field full"><label>Notes / mode de paiement</label><input name="note" placeholder="Espèces, mobile money, crédit…"></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Valider et créer la facture</button></div></form>`)}
+function updateSaleTotal(){let p=db.products.find(p=>p.id===document.getElementById('saleProduct')?.value);if(!p)return;let q=Number(document.getElementById('saleQty')?.value||0),price=Number(document.getElementById('salePrice')?.value||0),discount=Number(document.getElementById('saleDiscount')?.value||0),total=Math.max(0,q*price-discount),profit=total-q*Number(p.buy||0);document.getElementById('saleTotalPreview').textContent=money(total);document.getElementById('saleProfitPreview').textContent='Marge estimée : '+money(profit)}
+function saveSale(e){e.preventDefault();let f=Object.fromEntries(new FormData(e.target).entries()),p=db.products.find(p=>p.id===f.productId),q=Number(f.qty),price=Number(f.price),discount=Number(f.discount||0);if(!p||q<=0)return;if(q>Number(p.qty)){toast('Stock insuffisant. Disponible : '+p.qty);return}let total=Math.max(0,q*price-discount),profit=total-q*Number(p.buy||0),sale={id:uid('sale'),invoice:newNo('FAC',db.sales),clientId:f.clientId||'',date:new Date(f.date).toISOString(),items:[{productId:p.id,name:p.name,ref:p.ref,qty:q,unitPrice:price,buyPrice:Number(p.buy||0),subtotal:q*price}],discount,total,profit,note:f.note||'',status:'Payée'};p.qty=Number(p.qty)-q;let lots=db.lots.filter(l=>l.productId===p.id&&Number(l.qty)>0&&l.expiry).sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));let remaining=q;lots.forEach(l=>{let take=Math.min(remaining,Number(l.qty));l.qty=Number(l.qty)-take;remaining-=take});db.sales.unshift(sale);db.movements.push({id:uid('mov'),productId:p.id,type:'Sortie',qty:q,date:sale.date,reason:'Vente '+sale.invoice,note:f.note||''});logAndSave('Vente enregistrée',sale.invoice+' — '+money(total));closeModal();renderAll();go('sales');toast('Vente enregistrée.')}
+function renderSales(){let el=document.getElementById('salesTable');if(!el)return;let q=(document.getElementById('salesSearch')?.value||'').toLowerCase(),ss=db.sales.filter(s=>[s.invoice,nameClient(s.clientId),s.note].some(x=>String(x||'').toLowerCase().includes(q))).sort((a,b)=>new Date(b.date)-new Date(a.date));let total=ss.reduce((a,s)=>a+s.total,0),profit=ss.reduce((a,s)=>a+s.profit,0);document.getElementById('salesStats').innerHTML=[['Ventes enregistrées',ss.length],['Chiffre d’affaires filtré',money(total)],['Marge estimée',money(profit)]].map(x=>`<div class="reportbox"><span class="kpi-label">${x[0]}</span><strong>${x[1]}</strong></div>`).join('');el.innerHTML=table(['Facture','Date','Client','Articles','Total','Marge estimée','Actions'],ss.map(s=>`<tr><td><b>${esc(s.invoice)}</b></td><td>${dateFmt(s.date)}</td><td>${esc(nameClient(s.clientId))}</td><td>${s.items.reduce((a,i)=>a+i.qty,0)}</td><td><b>${money(s.total)}</b></td><td>${money(s.profit)}</td><td><button class="secondary small" onclick="printInvoice('${s.id}')">Imprimer facture</button> <button class="secondary small" onclick="printLabelForSale('${s.id}')">Étiquette</button></td></tr>`))}
+function printInvoice(id){let s=db.sales.find(x=>x.id===id);if(!s)return;let business=db.settings.businessName||'Mon Stock',client=db.clients.find(c=>c.id===s.clientId),w=window.open('','_blank');if(!w){toast('Autorisez les fenêtres d’impression dans le navigateur.');return}w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>${esc(s.invoice)}</title><style>body{font:14px Arial;margin:35px;color:#222}h1{margin-bottom:4px}small{color:#666}.head{display:flex;justify-content:space-between;border-bottom:2px solid #176b50;padding-bottom:18px}table{width:100%;border-collapse:collapse;margin-top:28px}th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left}th{background:#f2f5f3}.total{text-align:right;font-size:20px;margin-top:20px}.foot{margin-top:50px;color:#666;font-size:12px}@media print{button{display:none}}</style></head><body><div class="head"><div><h1>${esc(business)}</h1><small>Facture de vente</small></div><div><h2>${esc(s.invoice)}</h2><div>Date : ${dateFmt(s.date)}</div><div>Client : ${esc(client?.name||'Client de passage')}</div><div>${esc(client?.phone||'')}</div></div></div><table><thead><tr><th>Référence</th><th>Désignation</th><th>Qté</th><th>Prix unitaire</th><th>Total</th></tr></thead><tbody>${s.items.map(i=>`<tr><td>${esc(i.ref)}</td><td>${esc(i.name)}</td><td>${i.qty}</td><td>${money(i.unitPrice)}</td><td>${money(i.qty*i.unitPrice)}</td></tr>`).join('')}</tbody></table><div class="total">Sous-total : ${money(s.items.reduce((a,i)=>a+i.qty*i.unitPrice,0))}<br>Remise : ${money(s.discount)}<br><b>Total à payer : ${money(s.total)}</b></div><p>Mode de paiement / note : ${esc(s.note||'—')}</p><div class="foot">Document généré par Mon Stock. Vérifiez les exigences fiscales locales avant utilisation comme facture officielle.</div><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();}
+
+<script>
+/* Mon Stock 4.0 LAN connector */
+(function(){
+ const api='/api';
+ let msToken='', msRevision=0, msSyncReady=false, msSyncTimer=null, msSaving=false, msDirty=false, msRole='Consultation';
+ const originalSaveDB4=window.saveDB;
+ async function req(path,opts={}) {
+   const r=await fetch(api+path,{credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json',...(opts.headers||{})},...opts});
+   let d={};try{d=await r.json()}catch(_){}
+   if(!r.ok)throw new Error(d.error||('Erreur serveur '+r.status));
+   return d;
+ }
+ function showLogin(message='') {
+   let el=document.getElementById('ms4Login');if(el)el.remove();
+   el=document.createElement('div');el.id='ms4Login';
+   el.style='position:fixed;inset:0;z-index:99999;background:#0b1713ee;display:grid;place-items:center;padding:18px;font-family:Arial,sans-serif';
+   el.innerHTML=`<form id="ms4LoginForm" style="background:#fff;max-width:420px;width:100%;padding:26px;border-radius:16px;box-shadow:0 20px 60px #0005;color:#17251f"><h2 style="margin-top:0">Mon Stock · Connexion</h2><p style="color:#66736d">Serveur de l'entreprise · accès sécurisé</p><div style="color:#b42318;min-height:22px" id="ms4LoginErr">${message}</div><label style="display:block;margin:12px 0 5px">Nom de connexion</label><input name="username" autocomplete="username" required style="width:100%;padding:12px;box-sizing:border-box;border:1px solid #ccd4cf;border-radius:8px"><label style="display:block;margin:12px 0 5px">Mot de passe</label><input name="password" type="password" autocomplete="current-password" required style="width:100%;padding:12px;box-sizing:border-box;border:1px solid #ccd4cf;border-radius:8px"><button style="margin-top:18px;width:100%;padding:12px;background:#176b50;color:white;border:0;border-radius:8px;font-weight:bold">Se connecter</button><p style="font-size:12px;color:#66736d">Les données sont hébergées sur le serveur du réseau local.</p></form>`;
+   document.body.appendChild(el);
+   el.querySelector('form').addEventListener('submit',async e=>{
+     e.preventDefault();const fd=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Connexion…';
+     try{
+       const d=await req('/login',{method:'POST',body:JSON.stringify({username:fd.get('username'),password:fd.get('password')})});
+       msRole=d.role;msSyncReady=true;
+       const remote=await req('/state');
+       msRevision=remote.revision;
+       if(remote.state&&Object.keys(remote.state).length){
+         if(confirm('Charger les données communes du serveur ? Choisir « Annuler » pour envoyer les données locales actuelles au serveur (réservé à une première migration).')){
+           if(remote.state.products||remote.state.categories){window.db={...window.db,...remote.state};try{window.saveDB()}catch(_){};if(typeof window.renderAll==='function')window.renderAll();}
+         }else{
+           const local=window.db||{};
+           await req('/state',{method:'POST',body:JSON.stringify({expectedRevision:msRevision,state:local})});
+           const again=await req('/state');msRevision=again.revision;
+         }
+       } else {
+         await req('/state',{method:'POST',body:JSON.stringify({expectedRevision:msRevision,state:window.db||{}})});
+         const again=await req('/state');msRevision=again.revision;
+       }
+       el.remove();installSyncHooks();addStatus();
+       if(d.mustChangePassword)passwordDialog();
+       schedulePull();
+     }catch(err){document.getElementById('ms4LoginErr').textContent=err.message;btn.disabled=false;btn.textContent='Se connecter';}
+   });
+ }
+ function addStatus(){
+   let b=document.getElementById('ms4Status');if(b)return;
+   b=document.createElement('div');b.id='ms4Status';b.style='position:fixed;bottom:10px;right:10px;z-index:9998;background:#176b50;color:white;padding:7px 11px;border-radius:9px;font:12px Arial;box-shadow:0 2px 8px #0002';
+   b.textContent='Serveur connecté · '+msRole;document.body.appendChild(b);
+ }
+ function installSyncHooks(){
+   if(window.__ms4Installed)return;window.__ms4Installed=true;
+   const old=window.saveDB;
+   window.saveDB=function(){
+     if(typeof old==='function')old();
+     msDirty=true;
+     if(msSyncReady){clearTimeout(msSyncTimer);msSyncTimer=setTimeout(pushState,700);}
+   };
+ }
+ async function pushState(){
+   if(!msSyncReady||msSaving||!msDirty)return;
+   msSaving=true;msDirty=false;
+   try{
+     const d=await req('/state',{method:'POST',body:JSON.stringify({expectedRevision:msRevision,state:window.db||{}})});
+     msRevision=d.revision;
+     const s=document.getElementById('ms4Status');if(s)s.textContent='Synchronisé · '+msRole;
+   }catch(err){
+     msDirty=true;
+     const s=document.getElementById('ms4Status');if(s){s.textContent=err.message.includes('Conflit')?'Conflit : actualisez les données':'Hors ligne · modifications non confirmées';s.style.background='#9b2c2c';}
+     if(err.message.includes('Conflit')){
+       if(confirm('Un autre utilisateur a modifié les données. Recharger les données communes du serveur ? Les changements locaux non synchronisés peuvent être perdus.')){
+         try{const r=await req('/state');msRevision=r.revision;window.db={...window.db,...r.state};if(typeof window.saveDB==='function')window.saveDB();if(typeof window.renderAll==='function')window.renderAll();msDirty=false;}catch(e){alert('Impossible de recharger le serveur : '+e.message)}
+       }
+     }
+   }finally{msSaving=false;if(msDirty)setTimeout(pushState,1500);}
+ }
+ async function pullState(){
+   if(!msSyncReady||msDirty||msSaving)return;
+   try{
+     const r=await req('/state');
+     if(r.revision!==msRevision){
+       if(!msDirty&&!msSaving){msRevision=r.revision;window.db={...window.db,...r.state};if(typeof window.renderAll==='function')window.renderAll();}
+     }
+   }catch(_){const s=document.getElementById('ms4Status');if(s){s.textContent='Serveur indisponible';s.style.background='#9b2c2c';}}
+ }
+ function schedulePull(){setInterval(pullState,5000)}
+ function passwordDialog(){
+   const old=prompt('Changement de mot de passe requis. Saisissez le mot de passe actuel :');if(old===null)return;
+   const nw=prompt('Nouveau mot de passe (12 caractères minimum) :');if(!nw)return;
+   req('/password',{method:'POST',body:JSON.stringify({oldPassword:old,newPassword:nw})}).then(()=>alert('Mot de passe changé. Rechargez la page et reconnectez-vous.')).catch(e=>alert(e.message));
+ }
+ // Block common mutation pages for read-only roles as a client-side convenience; server checks remain authoritative.
+ document.addEventListener('DOMContentLoaded',()=>{
+   const nav=document.querySelector('#nav');
+   if(nav){const b=document.createElement('button');b.textContent='⎋ Déconnexion serveur';b.style='margin-top:10px';b.onclick=async()=>{try{await req('/logout',{method:'POST',body:'{}'})}catch(_){};location.reload()};nav.appendChild(b);}
+ });
+ // Profil d'entreprise et comptes locaux : fonctionne même hors ligne.
+ const PROFILE_KEY='ms4_company_profiles_v1';
+ const ACTIVE_KEY='ms4_active_profile_v1';
+ const categories=['Commerce général','Alimentation / restaurant','Mode / textile','Électricité / électronique','Matériaux de construction','Pharmacie / santé','Agriculture / élevage','Cosmétiques / beauté','Informatique / téléphonie','Atelier / production','Transport / logistique','Autre'];
+ function getProfiles(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'[]')}catch(_){return []}}
+ function setProfiles(a){localStorage.setItem(PROFILE_KEY,JSON.stringify(a))}
+ function activeProfile(){const id=localStorage.getItem(ACTIVE_KEY);return getProfiles().find(p=>p.id===id)||null}
+ function applyProfile(p){
+   if(!p)return;
+   const brand=document.querySelector('.brand');
+   if(brand){brand.querySelector('.logo').innerHTML=p.photo?`<img src="${p.photo}" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover;border-radius:12px">`:(p.name||'E').trim().charAt(0).toUpperCase();brand.querySelector('h1').textContent=p.name;brand.querySelector('p').textContent=[p.category,p.city].filter(Boolean).join(' · ');}
+   document.title=p.name+' — Gestion de stock';
+   document.querySelectorAll('h1').forEach(el=>{if(el.textContent.trim()==='Mon Stock')el.textContent=p.name});
+   document.querySelectorAll('.aside-foot div').forEach(el=>{if(el.textContent.includes('Mon Stock · Version'))el.textContent=p.name+' · Version 4.0'});
+   if(window.db){db.settings={...(db.settings||{}),businessName:p.name,managerName:db.settings?.managerName||''};try{saveDB()}catch(_){}}
+ }
+ function accountScreen(mode='choice',message=''){
+   let el=document.getElementById('ms4AccountGate');if(el)el.remove();
+   el=document.createElement('div');el.id='ms4AccountGate';
+   el.style='position:fixed;inset:0;z-index:100000;background:linear-gradient(135deg,#10231df2,#163e31f5);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;font-family:system-ui,Arial,sans-serif';
+   const box='max-width:500px;width:100%;background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #0005;color:#17251f;max-height:95vh;overflow:auto';
+   const field='width:100%;padding:12px;border:1px solid #d4ddd8;border-radius:10px;box-sizing:border-box;background:#fff;color:#17251f';
+   const lab='display:block;font-size:13px;font-weight:650;margin:13px 0 6px;color:#42534b';
+   const btn='width:100%;padding:13px;background:#176b50;color:#fff;border-radius:10px;font-weight:750;margin-top:15px';
+   const categoriesHtml=categories.map(c=>`<option>${c}</option>`).join('');
+   let inner=`<div style="text-align:center;margin-bottom:18px"><div style="margin:auto auto 12px;width:58px;height:58px;border-radius:17px;background:linear-gradient(135deg,#f4b33e,#e78520);display:grid;place-items:center;font-size:28px;font-weight:900;color:#172a23">▤</div><h2 style="margin:0;font-size:25px;color:#17251f!important;-webkit-text-fill-color:#17251f">Bienvenue</h2><p style="margin:7px 0 0;color:#69776f!important;-webkit-text-fill-color:#69776f">Configurez votre espace professionnel</p></div><div style="color:#b42318;min-height:20px;font-size:13px" id="ms4AccountErr">${message}</div>`;
+   if(mode==='choice'){
+     inner+=`<button id="ms4CreateChoice" type="button" style="display:block;width:100%;min-height:52px;padding:14px 16px;background:#176b50!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff;font-size:16px;line-height:1.35;border-radius:10px;font-weight:750;margin-top:15px">Créer un compte entreprise</button><button id="ms4LoginChoice" type="button" style="display:block;width:100%;min-height:52px;padding:14px 16px;background:#edf4f0!important;color:#176b50!important;-webkit-text-fill-color:#176b50;font-size:16px;line-height:1.35;border:1px solid #c8ddd2;border-radius:10px;font-weight:750;margin-top:10px">Se connecter à un compte existant</button><p style="font-size:12px;color:#738078;line-height:1.5;margin:17px 0 0">Les comptes créés dans cette version sont enregistrés sur cet appareil. Pour retrouver votre compte sur plusieurs appareils, un serveur d'authentification devra être configuré.</p>`;
+   } else if(mode==='register'){
+     inner+=`<h3 style="margin:0 0 6px">Créer votre compte</h3><p style="margin:0;color:#69776f;font-size:13px">Les informations de votre entreprise personnaliseront l’application.</p><form id="ms4RegisterForm"><div style="text-align:center;margin:16px 0"><label for="ms4Photo" style="display:inline-flex;align-items:center;gap:12px;cursor:pointer"><span id="ms4PhotoPreview" style="width:70px;height:70px;border-radius:50%;background:#eaf2ee;border:2px dashed #9bb8aa;display:grid;place-items:center;overflow:hidden;font-size:24px">＋</span><span style="text-align:left"><b>Photo de profil</b><br><small style="color:#69776f">Logo ou photo (facultatif)</small></span></label><input id="ms4Photo" type="file" accept="image/*" style="display:none"></div><label style="${lab}">Nom de l’entreprise *</label><input name="name" required maxlength="80" placeholder="Ex. Boutique Faso" style="${field}"><label style="${lab}">Numéro de téléphone *</label><input name="phone" type="tel" required maxlength="25" placeholder="Ex. 70 00 00 00" style="${field}"><label style="${lab}">Ville *</label><input name="city" required maxlength="60" placeholder="Ex. Koudougou" style="${field}"><label style="${lab}">Catégorie d’activité *</label><select name="category" required style="${field}"><option value="">Choisir votre domaine</option>${categoriesHtml}</select><label style="${lab}">Nom du responsable</label><input name="manager" maxlength="80" placeholder="Votre nom (facultatif)" style="${field}"><label style="${lab}">Nom d’utilisateur *</label><input name="username" required minlength="3" maxlength="40" autocomplete="username" placeholder="Ex. faisal" style="${field}"><label style="${lab}">Mot de passe *</label><input name="password" type="password" required minlength="4" autocomplete="new-password" placeholder="Au moins 4 caractères" style="${field}"><button style="${btn}">Créer mon espace</button><button type="button" id="ms4Back" style="${btn}display:block!important;min-height:48px;background:#edf4f0!important;color:#176b50!important;-webkit-text-fill-color:#176b50!important;border:1px solid #c8ddd2!important;margin-top:10px!important;line-height:1.4!important">Retour / Créer un compte</button></form>`;
+   } else {
+     inner+=`<h3 style="margin:0 0 6px">Connexion</h3><p style="margin:0;color:#69776f;font-size:13px">Connectez-vous avec le compte enregistré sur cet appareil.</p><form id="ms4LocalLogin"><label style="${lab}">Nom d’utilisateur</label><input name="username" required autocomplete="username" style="${field}"><label style="${lab}">Mot de passe</label><input name="password" type="password" required autocomplete="current-password" style="${field}"><button style="${btn}">Se connecter</button><button type="button" id="ms4Back" style="${btn}display:block!important;min-height:48px;background:#edf4f0!important;color:#176b50!important;-webkit-text-fill-color:#176b50!important;border:1px solid #c8ddd2!important;margin-top:10px!important;line-height:1.4!important">Retour / Créer un compte</button></form>`;
+   }
+   el.innerHTML=`<div style="${box}">${inner}</div>`;document.body.appendChild(el);
+   el.querySelector('#ms4CreateChoice')?.addEventListener('click',()=>accountScreen('register'));
+   el.querySelector('#ms4LoginChoice')?.addEventListener('click',()=>accountScreen('login'));
+   el.querySelector('#ms4Back')?.addEventListener('click',()=>accountScreen('choice'));
+   let photoData='';
+   el.querySelector('#ms4Photo')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>2*1024*1024){alert('Choisissez une image de moins de 2 Mo.');e.target.value='';return}const rd=new FileReader();rd.onload=()=>{photoData=rd.result;const pr=el.querySelector('#ms4PhotoPreview');pr.innerHTML=`<img src="${photoData}" style="width:100%;height:100%;object-fit:cover">`};rd.readAsDataURL(f)});
+   el.querySelector('#ms4RegisterForm')?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.target);const profiles=getProfiles();const username=String(fd.get('username')).trim().toLowerCase();if(profiles.some(p=>p.username===username)){el.querySelector('#ms4AccountErr').textContent='Ce nom d’utilisateur existe déjà sur cet appareil.';return}const p={id:'biz_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),name:String(fd.get('name')).trim(),phone:String(fd.get('phone')).trim(),city:String(fd.get('city')).trim(),category:String(fd.get('category')),manager:String(fd.get('manager')||'').trim(),username,password:String(fd.get('password')),photo:photoData,createdAt:new Date().toISOString()};profiles.push(p);setProfiles(profiles);localStorage.setItem(ACTIVE_KEY,p.id);if(window.db){db.settings={...(db.settings||{}),businessName:p.name,managerName:p.manager};try{saveDB()}catch(_){}}el.remove();applyProfile(p);});
+   el.querySelector('#ms4LocalLogin')?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.target),username=String(fd.get('username')).trim().toLowerCase(),password=String(fd.get('password'));const p=getProfiles().find(x=>x.username===username&&x.password===password);if(!p){el.querySelector('#ms4AccountErr').textContent='Identifiants incorrects ou compte non disponible dans ce navigateur. Vérifiez le nom et le mot de passe, ou appuyez sur « Retour / Créer un compte » si vous avez ouvert une nouvelle copie du fichier.';return}localStorage.setItem(ACTIVE_KEY,p.id);el.remove();applyProfile(p)});
+ }
+ // Toujours demander un choix de connexion à chaque ouverture du fichier.
+ // Les profils enregistrés et les données métier ne sont pas supprimés.
+ localStorage.removeItem(ACTIVE_KEY);
+ accountScreen('choice');
+})();
+<\/script>
+
+</body></html>`);w.document.close()}
+function exportSalesCSV(){exportCSV('mon-stock-ventes.csv',['Facture','Date','Client','Total','Marge estimée','Note'],db.sales.map(s=>[s.invoice,dateFmt(s.date),nameClient(s.clientId),s.total,s.profit,s.note]));toast('Ventes exportées.')}
+function openLot(id){if(!db.products.length){toast('Ajoutez un produit avant de créer un lot.');return}let l=db.lots.find(x=>x.id===id)||{id:'',productId:db.products[0].id,lotNo:'',qty:1,expiry:'',received:new Date().toISOString().slice(0,10),note:''};showModal(`<h3>${id?'Modifier le lot':'Ajouter un lot'}</h3><p class="sub">Un lot entrant augmente la quantité globale du produit à sa création.</p><form onsubmit="saveLot(event,'${id||''}')"><div class="formgrid"><div class="field full"><label>Produit *</label><select name="productId" required>${db.products.map(p=>`<option value="${p.id}" ${p.id===l.productId?'selected':''}>${esc(p.name)} (${esc(p.ref)})</option>`).join('')}</select></div><div class="field"><label>Numéro de lot *</label><input name="lotNo" required value="${esc(l.lotNo)}"></div><div class="field"><label>Quantité disponible *</label><input name="qty" type="number" min="0" step="0.001" required value="${l.qty}" ${id?'readonly':''}></div><div class="field"><label>Date de réception</label><input name="received" type="date" value="${l.received}" required></div><div class="field"><label>Date de péremption</label><input name="expiry" type="date" value="${l.expiry}" required></div><div class="field full"><label>Note</label><input name="note" value="${esc(l.note)}"></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Enregistrer le lot</button></div></form>`)}
+function saveLot(e,id){e.preventDefault();let v=Object.fromEntries(new FormData(e.target).entries());v.qty=Number(v.qty);if(id){let old=db.lots.find(l=>l.id===id);Object.assign(old,{lotNo:v.lotNo,expiry:v.expiry,received:v.received,note:v.note});}else{let p=db.products.find(p=>p.id===v.productId);v.id=uid('lot');db.lots.push(v);p.qty=Number(p.qty)+v.qty;db.movements.push({id:uid('mov'),productId:p.id,type:'Entrée',qty:v.qty,date:new Date().toISOString(),reason:'Réception lot '+v.lotNo,note:v.note||''})}logAndSave(id?'Modification lot':'Création lot',v.lotNo);closeModal();renderAll();go('lots');toast('Lot enregistré.')}
+function renderLots(){let el=document.getElementById('lotsTable');if(!el)return;let today=new Date();today.setHours(0,0,0,0);let soon=new Date(today);soon.setDate(soon.getDate()+30);let alerts=db.lots.filter(l=>Number(l.qty)>0&&l.expiry&&new Date(l.expiry+'T00:00:00')<=soon);document.getElementById('lotAlerts').innerHTML=alerts.length?`<div class="notice">⚠ ${alerts.length} lot(s) expiré(s) ou arrivant à échéance dans les 30 jours. Vérifiez les dates ci-dessous.</div>`:'';let ls=db.lots.slice().sort((a,b)=>String(a.expiry).localeCompare(String(b.expiry)));el.innerHTML=table(['Produit','N° lot','Date réception','Péremption','Quantité lot','État','Note','Actions'],ls.map(l=>{let d=l.expiry?new Date(l.expiry+'T00:00:00'):null,expired=d&&d<today,near=d&&d<=soon;return `<tr><td><b>${esc(prodName(l.productId))}</b></td><td>${esc(l.lotNo)}</td><td>${esc(l.received||'—')}</td><td>${esc(l.expiry||'—')}</td><td>${l.qty}</td><td><span class="pill ${expired?'low':near?'warn':'ok'}">${expired?'Expiré':near?'À surveiller':'Valide'}</span></td><td>${esc(l.note||'—')}</td><td><button class="secondary small" onclick="openLot('${l.id}')">Modifier</button> <button class="danger small" onclick="deleteLot('${l.id}')">×</button></td></tr>`}))}
+function deleteLot(id){let l=db.lots.find(x=>x.id===id);if(!l)return;if(!confirm('Supprimer le suivi de ce lot ? La quantité globale du produit ne sera pas modifiée.'))return;db.lots=db.lots.filter(x=>x.id!==id);logAndSave('Suppression lot',l.lotNo);renderAll()}
+function openWarehouse(id){let w=db.warehouses.find(x=>x.id===id)||{id:'',name:'',address:'',manager:''};showModal(`<h3>${id?'Modifier l’entrepôt':'Nouvel entrepôt / magasin'}</h3><form onsubmit="saveWarehouse(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Nom du site *</label><input name="name" required value="${esc(w.name)}"></div><div class="field"><label>Responsable</label><input name="manager" value="${esc(w.manager)}"></div><div class="field full"><label>Adresse / localisation</label><input name="address" value="${esc(w.address)}"></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Enregistrer</button></div></form>`)}
+function saveWarehouse(e,id){e.preventDefault();let v=Object.fromEntries(new FormData(e.target).entries());if(id)Object.assign(db.warehouses.find(w=>w.id===id),v);else{v.id=uid('wh');db.warehouses.push(v)}logAndSave(id?'Modification entrepôt':'Création entrepôt',v.name);closeModal();renderAll();go('warehouses')}
+function renderWarehouses(){let el=document.getElementById('warehousesTable');if(!el)return;el.innerHTML=table(['Site','Adresse','Responsable','Articles suivis','Actions'],db.warehouses.map(w=>{let n=Object.values(db.warehouseStock).filter(x=>Number(x[w.id]||0)>0).length;return `<tr><td><b>${esc(w.name)}</b></td><td>${esc(w.address||'—')}</td><td>${esc(w.manager||'—')}</td><td>${n}</td><td><button class="secondary small" onclick="openWarehouse('${w.id}')">Modifier</button> <button class="danger small" onclick="deleteWarehouse('${w.id}')">×</button></td></tr>`}));document.getElementById('warehouseBalances').innerHTML=table(['Produit','Référence','Entrepôt','Quantité'],db.products.flatMap(p=>db.warehouses.map(w=>({p,w,q:Number(db.warehouseStock[p.id]?.[w.id]||0)}))).filter(x=>x.q>0).map(x=>`<tr><td>${esc(x.p.name)}</td><td>${esc(x.p.ref)}</td><td>${esc(x.w.name)}</td><td>${x.q} ${esc(x.p.unit)}</td></tr>`))}
+function deleteWarehouse(id){if(db.warehouses.length<2){toast('Conservez au moins un entrepôt.');return}let bal=Object.values(db.warehouseStock).some(x=>Number(x[id]||0)>0);if(bal){toast('Transférez d’abord les stocks de cet entrepôt.');return}if(!confirm('Supprimer cet entrepôt ?'))return;db.warehouses=db.warehouses.filter(w=>w.id!==id);logAndSave('Suppression entrepôt',id);renderAll()}
+function openTransfer(){if(db.warehouses.length<2){toast('Créez au moins deux entrepôts.');return}if(!db.products.length){toast('Ajoutez un produit.');return}showModal(`<h3>Transfert entre entrepôts</h3><p class="sub">Le transfert diminue le solde du site source et augmente celui du site destinataire.</p><form onsubmit="saveTransfer(event)"><div class="formgrid"><div class="field full"><label>Produit</label><select name="productId" id="transferProduct" onchange="showTransferBalance()">${db.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${esc(p.ref)})</option>`).join('')}</select></div><div class="field"><label>Depuis</label><select name="from" id="transferFrom" onchange="showTransferBalance()">${db.warehouses.map(w=>`<option value="${w.id}">${esc(w.name)}</option>`).join('')}</select></div><div class="field"><label>Vers</label><select name="to">${db.warehouses.map((w,i)=>`<option value="${w.id}" ${i===1?'selected':''}>${esc(w.name)}</option>`).join('')}</select></div><div class="field"><label>Quantité</label><input name="qty" type="number" min="0.001" step="0.001" required value="1"></div><div class="field"><label>Note</label><input name="note"></div><div class="field full"><div id="transferBalance" class="notice"></div></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Valider le transfert</button></div></form>`);showTransferBalance()}
+function showTransferBalance(){let p=document.getElementById('transferProduct')?.value,w=document.getElementById('transferFrom')?.value;if(p&&w&&document.getElementById('transferBalance'))document.getElementById('transferBalance').textContent='Solde du site source : '+Number(db.warehouseStock[p]?.[w]||0)}
+function saveTransfer(e){e.preventDefault();let f=Object.fromEntries(new FormData(e.target).entries()),q=Number(f.qty);if(f.from===f.to){toast('Choisissez deux entrepôts différents.');return}db.warehouseStock[f.productId]=db.warehouseStock[f.productId]||{};let bal=Number(db.warehouseStock[f.productId][f.from]||0);if(q<=0||q>bal){toast('Quantité supérieure au solde du site source ('+bal+').');return}db.warehouseStock[f.productId][f.from]=bal-q;db.warehouseStock[f.productId][f.to]=Number(db.warehouseStock[f.productId][f.to]||0)+q;logAndSave('Transfert de stock',prodName(f.productId)+': '+q+' de '+nameWarehouse(f.from)+' vers '+nameWarehouse(f.to));closeModal();renderAll();go('warehouses');toast('Transfert enregistré.')}
+function openPurchaseOrder(id){let o=db.orders.find(x=>x.id===id);if(o){showModal(`<h3>Commande ${esc(o.number)}</h3><p class="sub">Fournisseur : ${esc(db.suppliers.find(s=>s.id===o.supplierId)?.name||'—')} · Statut : ${esc(o.status)}</p><div class="table-wrap">${table(['Produit','Quantité','Prix unitaire','Total'],o.items.map(i=>`<tr><td>${esc(prodName(i.productId))}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${money(i.qty*i.price)}</td></tr>`))}</div><p><b>Total : ${money(o.total)}</b></p><div class="modal-actions"><button class="secondary" onclick="printPO('${o.id}')">Imprimer bon</button>${o.status!=='Reçue'?`<button class="primary" onclick="receivePO('${o.id}')">Réceptionner</button>`:''}<button class="secondary" onclick="closeModal()">Fermer</button></div>`);return}if(!db.suppliers.length){toast('Ajoutez d’abord un fournisseur.');return}if(!db.products.length){toast('Ajoutez d’abord un produit.');return}showModal(`<h3>Nouvelle commande fournisseur</h3><p class="sub">Créez une commande avec un article. Vous pourrez en créer plusieurs pour compléter les achats.</p><form onsubmit="savePO(event)"><div class="formgrid"><div class="field full"><label>Fournisseur</label><select name="supplierId">${db.suppliers.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div><div class="field full"><label>Produit</label><select name="productId" id="poProduct" onchange="updatePOTotal()">${db.products.map(p=>`<option value="${p.id}">${esc(p.name)} — ${money(p.buy)}</option>`).join('')}</select></div><div class="field"><label>Quantité</label><input name="qty" id="poQty" type="number" min="0.001" step="0.001" value="1" required oninput="updatePOTotal()"></div><div class="field"><label>Prix unitaire d’achat</label><input name="price" id="poPrice" type="number" min="0" step="0.01" value="${db.products[0].buy}" required oninput="updatePOTotal()"></div><div class="field full"><div class="reportbox">Total estimé : <strong id="poTotal">${money(db.products[0].buy)}</strong></div></div><div class="field full"><label>Note</label><input name="note"></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Créer la commande</button></div></form>`)}
+function updatePOTotal(){let q=Number(document.getElementById('poQty')?.value||0),p=Number(document.getElementById('poPrice')?.value||0);if(document.getElementById('poTotal'))document.getElementById('poTotal').textContent=money(q*p)}
+function savePO(e){e.preventDefault();let f=Object.fromEntries(new FormData(e.target).entries()),q=Number(f.qty),price=Number(f.price),o={id:uid('po'),number:newNo('BC',db.orders),supplierId:f.supplierId,date:new Date().toISOString(),items:[{productId:f.productId,qty:q,price}],total:q*price,note:f.note||'',status:'En attente'};db.orders.unshift(o);logAndSave('Commande fournisseur créée',o.number);closeModal();renderAll();go('orders')}
+function renderOrders(){let el=document.getElementById('ordersTable');if(!el)return;el.innerHTML=table(['N° commande','Date','Fournisseur','Articles','Total estimé','Statut','Actions'],db.orders.map(o=>`<tr><td><b>${esc(o.number)}</b></td><td>${dateFmt(o.date)}</td><td>${esc(db.suppliers.find(s=>s.id===o.supplierId)?.name||'—')}</td><td>${o.items.length}</td><td>${money(o.total)}</td><td><span class="pill ${o.status==='Reçue'?'ok':'warn'}">${esc(o.status)}</span></td><td><button class="secondary small" onclick="openPurchaseOrder('${o.id}')">Détails</button> <button class="secondary small" onclick="printPO('${o.id}')">Imprimer</button></td></tr>`))}
+function receivePO(id){let o=db.orders.find(x=>x.id===id);if(!o||o.status==='Reçue')return;if(!confirm('Confirmer la réception de la commande '+o.number+' ? Les quantités seront ajoutées au stock.'))return;o.items.forEach(i=>{let p=db.products.find(p=>p.id===i.productId);if(p){p.qty=Number(p.qty)+Number(i.qty);let wid=db.warehouses[0]?.id;if(wid){db.warehouseStock[p.id]=db.warehouseStock[p.id]||{};db.warehouseStock[p.id][wid]=Number(db.warehouseStock[p.id][wid]||0)+Number(i.qty)}db.movements.push({id:uid('mov'),productId:p.id,type:'Entrée',qty:i.qty,date:new Date().toISOString(),reason:'Réception '+o.number,note:o.note})}});o.status='Reçue';logAndSave('Commande réceptionnée',o.number);closeModal();renderAll();go('orders');toast('Réception enregistrée.')}
+function printPO(id){let o=db.orders.find(x=>x.id===id);if(!o)return;let s=db.suppliers.find(s=>s.id===o.supplierId),w=window.open('','_blank');if(!w){toast('Autorisez les fenêtres d’impression.');return}w.document.write(`<html lang="fr"><meta charset="utf-8"><title>${esc(o.number)}</title><style>body{font:14px Arial;margin:35px}table{width:100%;border-collapse:collapse;margin-top:25px}td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left}</style><h1>${esc(db.settings.businessName||'Mon Stock')}</h1><h2>Bon de commande ${esc(o.number)}</h2><p>Fournisseur : ${esc(s?.name||'—')}<br>Date : ${dateFmt(o.date)}<br>Statut : ${esc(o.status)}</p><table><tr><th>Produit</th><th>Quantité</th><th>Prix unitaire</th><th>Total</th></tr>${o.items.map(i=>`<tr><td>${esc(prodName(i.productId))}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${money(i.qty*i.price)}</td></tr>`).join('')}</table><h3>Total estimé : ${money(o.total)}</h3><p>Notes : ${esc(o.note||'—')}</p><script>window.onload=()=>window.print()<\/script></html>`);w.document.close()}
+function openUser(id){let u=db.users.find(x=>x.id===id)||{id:'',name:'',role:'Magasinier',pin:'',active:true};showModal(`<h3>${id?'Modifier l’utilisateur':'Nouvel utilisateur'}</h3><p class="sub">Le PIN est facultatif et stocké localement. Il n'assure pas une sécurité forte.</p><form onsubmit="saveUser(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Nom affiché *</label><input name="name" required value="${esc(u.name)}"></div><div class="field"><label>Rôle</label><select name="role">${['Administrateur','Gestionnaire','Magasinier','Vendeur','Consultation'].map(r=>`<option ${u.role===r?'selected':''}>${r}</option>`).join('')}</select></div><div class="field"><label>PIN local (facultatif)</label><input name="pin" inputmode="numeric" maxlength="8" value="${esc(u.pin)}"></div><div class="field"><label>Statut</label><select name="active"><option value="true" ${u.active?'selected':''}>Actif</option><option value="false" ${!u.active?'selected':''}>Inactif</option></select></div></div><div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Enregistrer</button></div></form>`)}
+function saveUser(e,id){e.preventDefault();let v=Object.fromEntries(new FormData(e.target).entries());v.active=v.active==='true';if(id){Object.assign(db.users.find(u=>u.id===id),v)}else{v.id=uid('usr');db.users.push(v)}logAndSave(id?'Modification utilisateur':'Création utilisateur',v.name);closeModal();renderAll();go('users')}
+function renderUsers(){let el=document.getElementById('usersTable');if(!el)return;el.innerHTML=table(['Nom','Rôle','Statut','Utilisateur actif','Actions'],db.users.map(u=>`<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.role)}</td><td><span class="pill ${u.active?'ok':'low'}">${u.active?'Actif':'Inactif'}</span></td><td>${u.id===db.currentUser?'Oui':'Non'}</td><td><button class="secondary small" onclick="setCurrentUser('${u.id}')">Utiliser</button> <button class="secondary small" onclick="openUser('${u.id}')">Modifier</button></td></tr>`));document.getElementById('auditTable').innerHTML=table(['Date','Utilisateur','Action','Détails'],db.audit.slice(0,300).map(a=>`<tr><td>${dateFmt(a.date)}</td><td>${esc(a.user)}</td><td>${esc(a.action)}</td><td>${esc(a.detail)}</td></tr>`))}
+function setCurrentUser(id){let u=db.users.find(x=>x.id===id);if(!u||!u.active){toast('Utilisateur inactif.');return}if(u.pin){let pin=prompt('Saisissez le PIN local de '+u.name);if(pin!==u.pin){toast('PIN incorrect.');return}}db.currentUser=id;logAndSave('Changement utilisateur',u.name);renderUsers();toast('Utilisateur actif : '+u.name)}
+function exportAuditCSV(){exportCSV('mon-stock-journal.csv',['Date','Utilisateur','Action','Détails'],db.audit.map(a=>[dateFmt(a.date),a.user,a.action,a.detail]));toast('Journal exporté.')}
+function printLabelForSale(id){let s=db.sales.find(x=>x.id===id);if(!s)return;let i=s.items[0];printLabel(i.productId)}
+function printLabel(id){let p=db.products.find(x=>x.id===id);if(!p)return;let w=window.open('','_blank');if(!w){toast('Autorisez les fenêtres d’impression.');return}w.document.write(`<html><meta charset="utf-8"><title>Étiquette ${esc(p.name)}</title><style>@page{size:70mm 40mm;margin:3mm}body{font:11px Arial;text-align:center}h3{font-size:14px;margin:3px}p{margin:4px}</style><h3>${esc(p.name)}</h3><p>Réf. : ${esc(p.ref)}</p><p>${money(p.sell)}</p><p>Code : ${esc(p.barcode||p.ref)}</p><script>window.onload=()=>window.print()<\/script></html>`);w.document.close()}
+function openScanner(){showModal(`<h3>Scanner un code-barres</h3><p class="sub">Utilise la caméra si le navigateur le permet, ou saisis le code manuellement.</p><div id="scannerStatus" class="notice">Initialisation de la caméra…</div><video id="scannerVideo" autoplay muted playsinline style="width:100%;max-height:300px;background:#111;border-radius:10px"></video><div class="field" style="margin-top:12px"><label>Code-barres</label><input id="manualBarcode" placeholder="Saisir ou coller un code"></div><div class="modal-actions"><button class="secondary" onclick="stopScanner();closeModal()">Fermer</button><button class="primary" onclick="useScannedBarcode()">Utiliser le code</button></div>`);startScanner()}
+let scannerStream=null,scannerLoop=null;
+async function startScanner(){let status=document.getElementById('scannerStatus'),video=document.getElementById('scannerVideo');if(!('BarcodeDetector'in window)){status.textContent='Ce navigateur ne prend pas en charge la détection automatique. Saisissez le code manuellement ou essayez un navigateur compatible.';return}try{let detector=new BarcodeDetector({formats:['code_128','ean_13','ean_8','upc_a','upc_e','qr_code','code_39','itf']});scannerStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});video.srcObject=scannerStream;status.textContent='Caméra active : placez le code dans le cadre.';const tick=async()=>{if(!document.getElementById('scannerVideo')||!video.srcObject)return;try{if(video.readyState>=2){let codes=await detector.detect(video);if(codes.length){document.getElementById('manualBarcode').value=codes[0].rawValue;status.textContent='Code détecté : '+codes[0].rawValue;return}}}catch(e){}scannerLoop=setTimeout(tick,250)};tick()}catch(e){status.textContent='Caméra indisponible. Autorisez la caméra ou saisissez le code manuellement.'}}
+function stopScanner(){if(scannerLoop)clearTimeout(scannerLoop);if(scannerStream)scannerStream.getTracks().forEach(t=>t.stop());scannerStream=null}
+function useScannedBarcode(){let code=document.getElementById('manualBarcode')?.value.trim();if(!code){toast('Aucun code saisi.');return}stopScanner();closeModal();let p=db.products.find(p=>p.barcode===code||p.ref===code);if(p){go('products');setTimeout(()=>{let s=document.getElementById('productSearch');if(s){s.value=code;renderProducts()}},30);toast('Produit trouvé : '+p.name)}else{openProduct();setTimeout(()=>{let f=document.querySelector('#productForm [name="barcode"]');if(f)f.value=code;let ref=document.querySelector('#productForm [name="ref"]');if(ref&&!ref.value)ref.value=code},50);toast('Code ajouté au formulaire du nouveau produit.')}}
+/* Product screen tools and label actions */
+const oldRenderProducts=renderProducts;
+renderProducts=function(){oldRenderProducts();let head=document.querySelector('#page-products .toolbar');if(head&&!document.getElementById('scanBtn')){let b=document.createElement('button');b.id='scanBtn';b.className='secondary';b.textContent='▦ Scanner code-barres';b.onclick=openScanner;head.appendChild(b)}let tableEl=document.getElementById('productsTable');if(tableEl&&!tableEl.dataset.labelsAdded){tableEl.dataset.labelsAdded='1';/* action buttons are added below through delegated click */}}
+document.getElementById('productsTable').addEventListener('click',e=>{let btn=e.target.closest('button');if(!btn)return;let row=btn.closest('tr');if(!row)return;});
+/* Inject a label button into each product action cell after the base renderer. */
+const oldRenderProducts2=renderProducts;
+renderProducts=function(){oldRenderProducts2();document.querySelectorAll('#productsTable tbody tr').forEach(tr=>{let action=tr.lastElementChild;if(action&&!action.querySelector('[data-label]')){let first=action.querySelector('button');if(first){let ref=first.getAttribute('onclick')||'',m=ref.match(/openProduct\('([^']+)'\)/);if(m){let b=document.createElement('button');b.className='secondary small';b.textContent='Étiquette';b.setAttribute('data-label','1');b.onclick=()=>printLabel(m[1]);action.querySelector('div')?.appendChild(b)}}}})}
+/* Keep new modules in the backup export/import structure. */
+const oldExportData=exportData;
+exportData=function(){db.exportedAt=new Date().toISOString();let blob=new Blob([JSON.stringify({...db,app:'Mon Stock 2.0'},null,2)],{type:'application/json'});downloadBlob(blob,'mon-stock-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json');toast('Sauvegarde complète téléchargée.')}
+const oldImportData=importData;
+importData=function(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.products||!x.categories||!x.movements)throw new Error('Format');if(!confirm('La restauration remplacera les données actuelles. Continuer ?'))return;db={...structuredClone(defaults),...x,settings:{...defaults.settings,...x.settings},categories:x.categories,suppliers:x.suppliers||[],products:x.products,movements:x.movements,clients:x.clients||[],sales:x.sales||[],lots:x.lots||[],warehouses:x.warehouses||[{id:'wh-main',name:'Magasin principal',address:'',manager:''}],warehouseStock:x.warehouseStock||{},orders:x.orders||[],users:x.users||[{id:'usr-admin',name:'Administrateur',role:'Administrateur',pin:'',active:true}],audit:x.audit||[]};initWarehouseBalances();saveDB();renderAll();go('dashboard');toast('Sauvegarde restaurée.')}catch(err){alert('Fichier invalide ou incompatible avec Mon Stock.')}e.target.value=''};r.readAsText(file)}
+/* Add stock changes from manual movements to the selected main warehouse ledger. */
+const originalSaveMovement=saveMovement;
+saveMovement=function(e){let form=e.target,fd=new FormData(form),f=Object.fromEntries(fd.entries()),p=db.products.find(x=>x.id===f.productId),q=Number(f.qty);if(!p||q<=0)return;if(f.type==='Sortie'&&q>Number(p.qty)){toast(`Stock insuffisant : ${p.qty} ${p.unit} disponible(s).`);return}let wid=db.warehouses[0]?.id;if(wid){db.warehouseStock[p.id]=db.warehouseStock[p.id]||{};let bal=Number(db.warehouseStock[p.id][wid]||0);if(f.type==='Entrée')db.warehouseStock[p.id][wid]=bal+q;else if(f.type==='Sortie')db.warehouseStock[p.id][wid]=Math.max(0,bal-q);else db.warehouseStock[p.id][wid]=q}originalSaveMovement(e);audit('Mouvement de stock',prodName(f.productId)+' — '+f.type+' '+q)}
+/* Product additions are recorded in the primary warehouse ledger. */
+const originalSaveProduct=saveProduct;
+saveProduct=function(e,id){let form=e.target,fd=new FormData(form),v=Object.fromEntries(fd.entries());originalSaveProduct(e,id);if(!id){let p=db.products.find(x=>x.ref===v.ref.trim());let wid=db.warehouses[0]?.id;if(p&&wid){db.warehouseStock[p.id]=db.warehouseStock[p.id]||{};db.warehouseStock[p.id][wid]=Number(p.qty)||0}audit('Création produit',v.name+' ('+v.ref+')')}}
+/* Audit other core operations where possible. */
+const origSaveCategory=saveCategory;saveCategory=function(e,id){let n=new FormData(e.target).get('name');origSaveCategory(e,id);audit(id?'Modification catégorie':'Création catégorie',String(n||''))}
+const origSaveSupplier=saveSupplier;saveSupplier=function(e,id){let n=new FormData(e.target).get('name');origSaveSupplier(e,id);audit(id?'Modification fournisseur':'Création fournisseur',String(n||''))}
+const origDeleteProduct=deleteProduct;deleteProduct=function(id){let n=prodName(id);origDeleteProduct(id);audit('Suppression produit',n)}
+/* Print buttons and new pages are available from the sidebar. */
+renderAll();
+</script>
+
+
+<script>
+const priorSaveSaleForWarehouses=saveSale;
+saveSale=function(e){
+  const f=Object.fromEntries(new FormData(e.target).entries()),p=db.products.find(x=>x.id===f.productId),q=Number(f.qty),wid=db.warehouses[0]?.id;
+  if(!p||q<=0||(f.type==='Sortie'&&q>Number(p.qty)))return priorSaveSaleForWarehouses(e);
+  if(q>Number(p.qty)){toast('Stock insuffisant. Disponible : '+p.qty);return}
+  if(wid){db.warehouseStock[p.id]=db.warehouseStock[p.id]||{};db.warehouseStock[p.id][wid]=Math.max(0,Number(db.warehouseStock[p.id][wid]||0)-q)}
+  priorSaveSaleForWarehouses(e);saveDB();
+};
+const priorSaveLotForWarehouses=saveLot;
+saveLot=function(e,id){
+  const f=Object.fromEntries(new FormData(e.target).entries()),q=Number(f.qty),pid=f.productId,wid=db.warehouses[0]?.id;
+  priorSaveLotForWarehouses(e,id);
+  if(!id&&wid&&pid){db.warehouseStock[pid]=db.warehouseStock[pid]||{};db.warehouseStock[pid][wid]=Number(db.warehouseStock[pid][wid]||0)+q;saveDB();renderWarehouses()}
+};
+</script>
+
+
+<script>
+/* Mon Stock 3.0 — renforcement de cohérence, sauvegardes et gestion multi-sites */
+const MS3_VERSION = '3.0';
+const MS3_BACKUP_KEY = 'monStockDataV1_lastGoodBackup';
+const ms3BaseSaveDB = saveDB;
+
+/* Sauvegarde locale de secours avant chaque écriture. */
+saveDB = function() {
+  try {
+    const previous = localStorage.getItem(KEY);
+    if (previous) localStorage.setItem(MS3_BACKUP_KEY, previous);
+    localStorage.setItem(KEY, JSON.stringify(db));
+    return true;
+  } catch (err) {
+    console.error('Mon Stock : échec de sauvegarde locale', err);
+    try { toast('Attention : sauvegarde impossible. Exportez immédiatement vos données.'); } catch (_) {}
+    return false;
+  }
+};
+
+/* Migration sûre des structures utilisées par les versions précédentes. */
+function ms3Migrate() {
+  db.settings = {...defaults.settings, ...(db.settings || {})};
+  ['categories','suppliers','products','movements','clients','sales','lots','warehouses','orders','users','audit'].forEach(k => {
+    if (!Array.isArray(db[k])) db[k] = [];
+  });
+  if (!db.warehouses.length) db.warehouses = [{id:'wh-main',name:'Magasin principal',address:'',manager:''}];
+  if (!db.users.length) db.users = [{id:'usr-admin',name:'Administrateur',role:'Administrateur',pin:'',active:true}];
+  if (!db.warehouseStock || typeof db.warehouseStock !== 'object') db.warehouseStock = {};
+  db.products.forEach(p => {
+    if (!db.warehouseStock[p.id] || typeof db.warehouseStock[p.id] !== 'object') {
+      db.warehouseStock[p.id] = {};
+      db.warehouseStock[p.id][db.warehouses[0].id] = Math.max(0, Number(p.qty) || 0);
+    }
+    db.warehouses.forEach(w => {
+      if (!Number.isFinite(Number(db.warehouseStock[p.id][w.id]))) db.warehouseStock[p.id][w.id] = 0;
+      db.warehouseStock[p.id][w.id] = Math.max(0, Number(db.warehouseStock[p.id][w.id]) || 0);
+    });
+  });
+}
+ms3Migrate();
+
+/* La somme des soldes de tous les sites devient la quantité de référence du produit. */
+function ms3WarehouseTotal(productId) {
+  const balances = db.warehouseStock[productId] || {};
+  return db.warehouses.reduce((sum,w) => sum + Math.max(0, Number(balances[w.id]) || 0), 0);
+}
+function ms3SetBalance(productId, warehouseId, quantity) {
+  if (!db.warehouseStock[productId]) db.warehouseStock[productId] = {};
+  db.warehouseStock[productId][warehouseId] = Math.max(0, Number(quantity) || 0);
+  const p = db.products.find(x => x.id === productId);
+  if (p) p.qty = ms3WarehouseTotal(productId);
+}
+function ms3MainWarehouse() { return db.warehouses[0]?.id || 'wh-main'; }
+function ms3WarehouseOptions(selected) {
+  return db.warehouses.map(w => `<option value="${esc(w.id)}" ${w.id===selected?'selected':''}>${esc(w.name)}</option>`).join('');
+}
+function ms3Log(action, detail) {
+  if (!Array.isArray(db.audit)) db.audit = [];
+  db.audit.unshift({id:uid('aud'),date:new Date().toISOString(),user:db.users?.find(u=>u.id===db.currentUser)?.name||'Opérateur local',action,detail});
+  db.audit = db.audit.slice(0,2000);
+}
+
+/* Mouvements de stock explicitement affectés à un entrepôt. */
+openMovement = function(productId='', type='Entrée') {
+  if (!db.products.length) { toast('Ajoutez d’abord un produit.'); return; }
+  let p = db.products.find(x=>x.id===productId) || db.products[0];
+  const wid = ms3MainWarehouse();
+  showModal(`<h3>Nouveau mouvement de stock</h3>
+  <p class="sub">Le mouvement est affecté à un site précis et inscrit dans l'historique.</p>
+  <form onsubmit="saveMovement(event)"><div class="formgrid">
+  <div class="field full"><label>Produit *</label><select name="productId" required>${db.products.map(x=>`<option value="${esc(x.id)}" ${x.id===p.id?'selected':''}>${esc(x.name)} — ${esc(x.ref)} (total : ${x.qty})</option>`).join('')}</select></div>
+  <div class="field full"><label>Entrepôt / magasin *</label><select name="warehouseId" required>${ms3WarehouseOptions(wid)}</select></div>
+  <div class="field"><label>Type de mouvement *</label><select name="type" id="movType" onchange="document.getElementById('adjustHelp').classList.toggle('hide',this.value!=='Ajustement')"><option ${type==='Entrée'?'selected':''}>Entrée</option><option ${type==='Sortie'?'selected':''}>Sortie</option><option ${type==='Ajustement'?'selected':''}>Ajustement</option></select></div>
+  <div class="field"><label>Quantité *</label><input name="qty" type="number" min="0" step="0.001" required value="1"></div>
+  <div class="field"><label>Motif</label><select name="reason"><option>Réapprovisionnement</option><option>Vente</option><option>Retour client</option><option>Retour fournisseur</option><option>Perte / casse</option><option>Usage interne</option><option>Inventaire</option><option>Autre</option></select></div>
+  <div class="field"><label>Date du mouvement</label><input name="date" type="datetime-local" value="${new Date().toISOString().slice(0,16)}" required></div>
+  <div class="field full hide" id="adjustHelp"><div class="notice">Pour un ajustement, la quantité saisie représente le stock final compté dans cet entrepôt.</div></div>
+  <div class="field full"><label>Note / numéro de document</label><input name="note" placeholder="N° facture, commentaire…"></div></div>
+  <div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Annuler</button><button class="primary">Valider le mouvement</button></div></form>`);
+};
+
+saveMovement = function(e) {
+  e.preventDefault();
+  const f = Object.fromEntries(new FormData(e.target).entries());
+  const p = db.products.find(x=>x.id===f.productId), q = Number(f.qty), wid=f.warehouseId;
+  if (!p || !db.warehouses.some(w=>w.id===wid) || !Number.isFinite(q) || q<=0) { toast('Vérifiez le produit, le site et la quantité.'); return; }
+  const before = Number(db.warehouseStock[p.id]?.[wid] || 0);
+  if (f.type==='Sortie' && q>before) { toast(`Stock insuffisant dans ce site : ${before} ${p.unit||''} disponible(s).`); return; }
+  const after = f.type==='Entrée' ? before+q : f.type==='Sortie' ? before-q : q;
+  ms3SetBalance(p.id,wid,after);
+  db.movements.push({id:uid('mov'),productId:p.id,warehouseId:wid,type:f.type,qty:q,date:new Date(f.date).toISOString(),reason:f.reason,note:f.note||'',before,after});
+  ms3Log('Mouvement de stock', `${p.name} — ${f.type} ${q} — ${nameWarehouse(wid)}`);
+  saveDB(); closeModal(); renderAll(); go('movements'); toast('Mouvement enregistré.');
+};
+
+/* Les ventes sont affectées à un site et ne peuvent pas dépasser son solde. */
+const ms3OriginalOpenSale = openSale;
+openSale = function() {
+  ms3OriginalOpenSale();
+  const form = document.getElementById('saleForm');
+  if (!form) return;
+  const grid = form.querySelector('.formgrid');
+  if (!grid) return;
+  const field = document.createElement('div');
+  field.className='field full';
+  field.innerHTML=`<label>Entrepôt / magasin de sortie *</label><select name="warehouseId" id="saleWarehouse" required>${ms3WarehouseOptions(ms3MainWarehouse())}</select>`;
+  const first = grid.firstElementChild;
+  if (first) grid.insertBefore(field,first.nextSibling); else grid.appendChild(field);
+  const productSelect = document.getElementById('saleProduct');
+  const refresh = () => {
+    const p=db.products.find(x=>x.id===productSelect?.value), w=document.getElementById('saleWarehouse')?.value;
+    const bal=p&&w?Number(db.warehouseStock[p.id]?.[w]||0):0;
+    const qty=document.getElementById('saleQty');
+    if(qty) qty.max=String(bal);
+    const note=document.getElementById('saleProfitPreview');
+    if(note&&p) note.textContent='Marge estimée : '+money((Number(qty?.value||0)*Number(document.getElementById('salePrice')?.value||0))-Number(document.getElementById('saleDiscount')?.value||0)-Number(qty?.value||0)*Number(p.buy||0))+' · Stock du site : '+bal;
+  };
+  document.getElementById('saleWarehouse')?.addEventListener('change',refresh);
+  productSelect?.addEventListener('change',refresh);
+  refresh();
+};
+saveSale = function(e) {
+  e.preventDefault();
+  const f=Object.fromEntries(new FormData(e.target).entries());
+  const p=db.products.find(x=>x.id===f.productId), q=Number(f.qty), price=Number(f.price), discount=Number(f.discount||0), wid=f.warehouseId||ms3MainWarehouse();
+  if(!p || !Number.isFinite(q) || q<=0 || !Number.isFinite(price) || price<0 || !Number.isFinite(discount) || discount<0){toast('Vérifiez les données de la vente.');return}
+  const balance=Number(db.warehouseStock[p.id]?.[wid]||0);
+  if(q>balance){toast(`Stock insuffisant dans ${nameWarehouse(wid)} : ${balance} disponible(s).`);return}
+  if(discount>q*price){toast('La remise ne peut pas dépasser le montant brut.');return}
+  const total=q*price-discount, profit=total-q*Number(p.buy||0);
+  const sale={id:uid('sale'),invoice:newNo('FAC',db.sales),clientId:f.clientId||'',date:new Date(f.date).toISOString(),warehouseId:wid,items:[{productId:p.id,name:p.name,ref:p.ref,qty:q,unitPrice:price,buyPrice:Number(p.buy||0),subtotal:q*price}],discount,total,profit,note:f.note||'',status:'Payée'};
+  ms3SetBalance(p.id,wid,balance-q);
+  const lots=db.lots.filter(l=>l.productId===p.id&&Number(l.qty)>0&&l.expiry).sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
+  let remaining=q; lots.forEach(l=>{if(remaining>0){const take=Math.min(remaining,Number(l.qty));l.qty=Number(l.qty)-take;remaining-=take}});
+  db.sales.unshift(sale);
+  db.movements.push({id:uid('mov'),productId:p.id,warehouseId:wid,type:'Sortie',qty:q,date:sale.date,reason:'Vente '+sale.invoice,note:f.note||''});
+  ms3Log('Vente enregistrée',sale.invoice+' — '+money(total)+' — '+nameWarehouse(wid));
+  saveDB();closeModal();renderAll();go('sales');toast('Vente enregistrée et stock mis à jour.');
+};
+
+/* Les commandes reçues sont ajoutées au site principal avec contrôle des quantités. */
+receivePO = function(id) {
+  const o=db.orders.find(x=>x.id===id);
+  if(!o||o.status==='Reçue')return;
+  if(!confirm('Confirmer la réception de la commande '+o.number+' ? Les quantités seront ajoutées au magasin principal.'))return;
+  const wid=ms3MainWarehouse();
+  for(const i of o.items){
+    const p=db.products.find(x=>x.id===i.productId);
+    if(!p){toast('Réception annulée : un produit de la commande n’existe plus.');return}
+    if(!Number.isFinite(Number(i.qty))||Number(i.qty)<=0){toast('Réception annulée : quantité invalide.');return}
+  }
+  o.items.forEach(i=>{
+    const p=db.products.find(x=>x.id===i.productId),q=Number(i.qty),before=Number(db.warehouseStock[p.id]?.[wid]||0);
+    ms3SetBalance(p.id,wid,before+q);
+    db.movements.push({id:uid('mov'),productId:p.id,warehouseId:wid,type:'Entrée',qty:q,date:new Date().toISOString(),reason:'Réception '+o.number,note:o.note||'',before,after:before+q});
+  });
+  o.status='Reçue';o.receivedAt=new Date().toISOString();
+  ms3Log('Commande réceptionnée',o.number+' — '+nameWarehouse(wid));
+  saveDB();closeModal();renderAll();go('orders');toast('Réception enregistrée.');
+};
+
+/* Lots entrants et stock global sont réconciliés avec le site principal. */
+const ms3OldSaveLot = saveLot;
+saveLot = function(e,id) {
+  const f=Object.fromEntries(new FormData(e.target).entries());
+  const q=Number(f.qty), pid=f.productId, wid=ms3MainWarehouse();
+  if(!id && (!Number.isFinite(q)||q<0)){toast('Quantité de lot invalide.');return}
+  ms3OldSaveLot(e,id);
+  if(!id && db.products.some(p=>p.id===pid)){
+    const p=db.products.find(p=>p.id===pid);
+    const expected=Number(p.qty)||0;
+    const sum=ms3WarehouseTotal(pid);
+    if(Math.abs(sum-expected)>0.000001) ms3SetBalance(pid,wid,Number(db.warehouseStock[pid]?.[wid]||0)+(expected-sum));
+    saveDB();
+  }
+};
+
+/* Diagnostic de cohérence et restauration de la dernière sauvegarde locale. */
+function ms3RunDiagnostics() {
+  const issues=[];
+  const refs=new Set();
+  db.products.forEach(p=>{
+    if(!p.ref)issues.push(`Produit sans référence : ${p.name||p.id}`);
+    const ref=String(p.ref||'').toLowerCase();
+    if(refs.has(ref))issues.push(`Référence en double : ${p.ref}`); refs.add(ref);
+    if(!Number.isFinite(Number(p.qty))||Number(p.qty)<0)issues.push(`Quantité invalide : ${p.name}`);
+    const total=ms3WarehouseTotal(p.id);
+    if(Math.abs(total-Number(p.qty||0))>0.001)issues.push(`Écart entre stock global et entrepôts : ${p.name} (global ${p.qty}, sites ${total})`);
+  });
+  db.sales.forEach(s=>{if(!Number.isFinite(Number(s.total))||Number(s.total)<0)issues.push(`Montant de vente invalide : ${s.invoice||s.id}`)});
+  db.orders.forEach(o=>{if(o.status==='Reçue'&&!o.receivedAt)issues.push(`Commande reçue sans date de réception : ${o.number}`)});
+  return issues;
+}
+function ms3RenderDiagnostics() {
+  const old=document.getElementById('ms3Diagnostics');
+  if(old)old.remove();
+  const settingsPage=document.getElementById('page-settings');
+  if(!settingsPage)return;
+  const panel=document.createElement('div');
+  panel.id='ms3Diagnostics';panel.className='panel';panel.style.marginTop='16px';
+  const issues=ms3RunDiagnostics();
+  panel.innerHTML=`<div class="panel-head"><h3>Contrôle de cohérence & sécurité des données</h3><span class="pill ${issues.length?'warn':'ok'}">${issues.length?issues.length+' anomalie(s)':'Aucun écart détecté'}</span></div>
+  <p class="muted">Vérification locale des références, quantités et soldes des entrepôts. Ce contrôle ne remplace pas un audit comptable.</p>
+  ${issues.length?`<div class="notice">${issues.slice(0,30).map(esc).join('<br>')}${issues.length>30?'<br>… autres anomalies':''}</div>`:'<div class="notice">Les quantités globales correspondent aux soldes des entrepôts vérifiés.</div>'}
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="secondary" onclick="ms3ExportAuditReport()">Exporter le diagnostic CSV</button><button class="secondary" onclick="ms3RestoreLocalBackup()">Restaurer la dernière sauvegarde locale</button><button class="secondary" onclick="ms3Reconcile()">Réconcilier les quantités depuis les entrepôts</button></div>`;
+  settingsPage.appendChild(panel);
+}
+function ms3ExportAuditReport(){const rows=ms3RunDiagnostics().map((x,i)=>[i+1,x]);exportCSV('mon-stock-diagnostic.csv',['N°','Anomalie'],rows);toast('Diagnostic exporté.')}
+function ms3RestoreLocalBackup(){
+  const raw=localStorage.getItem(MS3_BACKUP_KEY);
+  if(!raw){toast('Aucune sauvegarde locale de secours disponible.');return}
+  if(!confirm('Restaurer la dernière copie locale ? Les données actuelles seront remplacées. Exportez-les d’abord si nécessaire.'))return;
+  try{const x=JSON.parse(raw);if(!Array.isArray(x.products)||!Array.isArray(x.categories)||!Array.isArray(x.movements))throw Error('Format');
+    db={...structuredClone(defaults),...x,settings:{...defaults.settings,...x.settings}};
+    ms3Migrate();saveDB();renderAll();go('settings');toast('Sauvegarde locale restaurée.');
+  }catch(err){alert('La copie locale de secours est invalide.')}
+}
+function ms3Reconcile(){
+  if(!confirm('Cette opération recalculera le stock global comme la somme des soldes par entrepôt. Continuer ?'))return;
+  db.products.forEach(p=>{p.qty=ms3WarehouseTotal(p.id)});
+  ms3Log('Réconciliation des stocks','Stock global recalculé à partir des soldes des entrepôts');
+  saveDB();renderAll();ms3RenderDiagnostics();toast('Réconciliation terminée.');
+}
+
+/* Export complet avec version de schéma et validation avant restauration. */
+exportData = function() {
+  const payload={...db,app:'Mon Stock',version:MS3_VERSION,schemaVersion:3,exportedAt:new Date().toISOString()};
+  downloadBlob(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),'mon-stock-sauvegarde-v3-'+new Date().toISOString().slice(0,10)+'.json');
+  toast('Sauvegarde complète exportée.');
+};
+importData = function(e) {
+  const file=e.target.files?.[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const x=JSON.parse(reader.result);
+      if(!x||!Array.isArray(x.products)||!Array.isArray(x.categories)||!Array.isArray(x.movements))throw Error('Structure invalide');
+      if(!confirm('La restauration remplacera les données actuelles. Exportez une sauvegarde actuelle avant de continuer.')){e.target.value='';return}
+      const candidate={...structuredClone(defaults),...x,settings:{...defaults.settings,...x.settings}};
+      ['products','categories','suppliers','movements','clients','sales','lots','warehouses','orders','users','audit'].forEach(k=>{if(!Array.isArray(candidate[k]))candidate[k]=[]});
+      if(candidate.products.some(p=>!p||typeof p!=='object'||!('id'in p)))throw Error('Produit invalide');
+      db=candidate;ms3Migrate();saveDB();renderAll();go('dashboard');toast('Sauvegarde restaurée et vérifiée.');
+    }catch(err){alert('Fichier de sauvegarde invalide ou incompatible. Aucune restauration effectuée.')}
+    e.target.value='';
+  };
+  reader.readAsText(file);
+};
+
+/* Ajoute l'état du logiciel et le diagnostic dans les paramètres. */
+const ms3OldRenderSettings=renderSettings;
+renderSettings=function(){ms3OldRenderSettings();ms3RenderDiagnostics()};
+const ms3OldRenderAll=renderAll;
+renderAll=function(){ms3OldRenderAll();ms3RenderDiagnostics()};
+const ms3OldGo=go;
+go=function(page){ms3OldGo(page);if(page==='settings')ms3RenderDiagnostics()};
+
+/* Métadonnées version et journal d'ouverture. */
+db.appVersion=MS3_VERSION;
+if(!db._ms3Initialized){db._ms3Initialized=true;ms3Log('Initialisation de Mon Stock', 'Version '+MS3_VERSION+' — stockage local');saveDB()}
+renderAll();
+</script>
+
+<script>
+/* Mon Stock 4.0 LAN connector */
+(function(){
+ const api='/api';
+ let msToken='', msRevision=0, msSyncReady=false, msSyncTimer=null, msSaving=false, msDirty=false, msRole='Consultation';
+ const originalSaveDB4=window.saveDB;
+ async function req(path,opts={}) {
+   const r=await fetch(api+path,{credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json',...(opts.headers||{})},...opts});
+   let d={};try{d=await r.json()}catch(_){}
+   if(!r.ok)throw new Error(d.error||('Erreur serveur '+r.status));
+   return d;
+ }
+ function showLogin(message='') {
+   let el=document.getElementById('ms4Login');if(el)el.remove();
+   el=document.createElement('div');el.id='ms4Login';
+   el.style='position:fixed;inset:0;z-index:99999;background:#0b1713ee;display:grid;place-items:center;padding:18px;font-family:Arial,sans-serif';
+   el.innerHTML=`<form id="ms4LoginForm" style="background:#fff;max-width:420px;width:100%;padding:26px;border-radius:16px;box-shadow:0 20px 60px #0005;color:#17251f"><h2 style="margin-top:0">Mon Stock · Connexion</h2><p style="color:#66736d">Serveur de l'entreprise · accès sécurisé</p><div style="color:#b42318;min-height:22px" id="ms4LoginErr">${message}</div><label style="display:block;margin:12px 0 5px">Nom de connexion</label><input name="username" autocomplete="username" required style="width:100%;padding:12px;box-sizing:border-box;border:1px solid #ccd4cf;border-radius:8px"><label style="display:block;margin:12px 0 5px">Mot de passe</label><input name="password" type="password" autocomplete="current-password" required style="width:100%;padding:12px;box-sizing:border-box;border:1px solid #ccd4cf;border-radius:8px"><button style="margin-top:18px;width:100%;padding:12px;background:#176b50;color:white;border:0;border-radius:8px;font-weight:bold">Se connecter</button><p style="font-size:12px;color:#66736d">Les données sont hébergées sur le serveur du réseau local.</p></form>`;
+   document.body.appendChild(el);
+   el.querySelector('form').addEventListener('submit',async e=>{
+     e.preventDefault();const fd=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Connexion…';
+     try{
+       const d=await req('/login',{method:'POST',body:JSON.stringify({username:fd.get('username'),password:fd.get('password')})});
+       msRole=d.role;msSyncReady=true;
+       const remote=await req('/state');
+       msRevision=remote.revision;
+       if(remote.state&&Object.keys(remote.state).length){
+         if(confirm('Charger les données communes du serveur ? Choisir « Annuler » pour envoyer les données locales actuelles au serveur (réservé à une première migration).')){
+           if(remote.state.products||remote.state.categories){window.db={...window.db,...remote.state};try{window.saveDB()}catch(_){};if(typeof window.renderAll==='function')window.renderAll();}
+         }else{
+           const local=window.db||{};
+           await req('/state',{method:'POST',body:JSON.stringify({expectedRevision:msRevision,state:local})});
+           const again=await req('/state');msRevision=again.revision;
+         }
+       } else {
+         await req('/state',{method:'POST',body:JSON.stringify({expectedRevision:msRevision,state:window.db||{}})});
+         const again=await req('/state');msRevision=again.revision;
+       }
+       el.remove();installSyncHooks();addStatus();
+       if(d.mustChangePassword)passwordDialog();
+       schedulePull();
+     }catch(err){document.getElementById('ms4LoginErr').textContent=err.message;btn.disabled=false;btn.textContent='Se connecter';}
+   });
+ }
+ function addStatus(){
+   let b=document.getElementById('ms4Status');if(b)return;
+   b=document.createElement('div');b.id='ms4Status';b.style='position:fixed;bottom:10px;right:10px;z-index:9998;background:#176b50;color:white;padding:7px 11px;border-radius:9px;font:12px Arial;box-shadow:0 2px 8px #0002';
+   b.textContent='Serveur connecté · '+msRole;document.body.appendChild(b);
+ }
+ function installSyncHooks(){
+   if(window.__ms4Installed)return;window.__ms4Installed=true;
+   const old=window.saveDB;
+   window.saveDB=function(){
+     if(typeof old==='function')old();
+     msDirty=true;
+     if(msSyncReady){clearTimeout(msSyncTimer);msSyncTimer=setTimeout(pushState,700);}
+   };
+ }
+ async function pushState(){
+   if(!msSyncReady||msSaving||!msDirty)return;
+   msSaving=true;msDirty=false;
+   try{
+     const d=await req('/state',{method:'POST',body:JSON.stringify({expectedRevision:msRevision,state:window.db||{}})});
+     msRevision=d.revision;
+     const s=document.getElementById('ms4Status');if(s)s.textContent='Synchronisé · '+msRole;
+   }catch(err){
+     msDirty=true;
+     const s=document.getElementById('ms4Status');if(s){s.textContent=err.message.includes('Conflit')?'Conflit : actualisez les données':'Hors ligne · modifications non confirmées';s.style.background='#9b2c2c';}
+     if(err.message.includes('Conflit')){
+       if(confirm('Un autre utilisateur a modifié les données. Recharger les données communes du serveur ? Les changements locaux non synchronisés peuvent être perdus.')){
+         try{const r=await req('/state');msRevision=r.revision;window.db={...window.db,...r.state};if(typeof window.saveDB==='function')window.saveDB();if(typeof window.renderAll==='function')window.renderAll();msDirty=false;}catch(e){alert('Impossible de recharger le serveur : '+e.message)}
+       }
+     }
+   }finally{msSaving=false;if(msDirty)setTimeout(pushState,1500);}
+ }
+ async function pullState(){
+   if(!msSyncReady||msDirty||msSaving)return;
+   try{
+     const r=await req('/state');
+     if(r.revision!==msRevision){
+       if(!msDirty&&!msSaving){msRevision=r.revision;window.db={...window.db,...r.state};if(typeof window.renderAll==='function')window.renderAll();}
+     }
+   }catch(_){const s=document.getElementById('ms4Status');if(s){s.textContent='Serveur indisponible';s.style.background='#9b2c2c';}}
+ }
+ function schedulePull(){setInterval(pullState,5000)}
+ function passwordDialog(){
+   const old=prompt('Changement de mot de passe requis. Saisissez le mot de passe actuel :');if(old===null)return;
+   const nw=prompt('Nouveau mot de passe (12 caractères minimum) :');if(!nw)return;
+   req('/password',{method:'POST',body:JSON.stringify({oldPassword:old,newPassword:nw})}).then(()=>alert('Mot de passe changé. Rechargez la page et reconnectez-vous.')).catch(e=>alert(e.message));
+ }
+ // Block common mutation pages for read-only roles as a client-side convenience; server checks remain authoritative.
+ document.addEventListener('DOMContentLoaded',()=>{
+   const nav=document.querySelector('#nav');
+   if(nav){const b=document.createElement('button');b.textContent='⎋ Déconnexion serveur';b.style='margin-top:10px';b.onclick=async()=>{try{await req('/logout',{method:'POST',body:'{}'})}catch(_){};location.reload()};nav.appendChild(b);}
+ });
+ // Profil d'entreprise et comptes locaux : fonctionne même hors ligne.
+ const PROFILE_KEY='ms4_company_profiles_v1';
+ const ACTIVE_KEY='ms4_active_profile_v1';
+ const categories=['Commerce général','Alimentation / restaurant','Mode / textile','Électricité / électronique','Matériaux de construction','Pharmacie / santé','Agriculture / élevage','Cosmétiques / beauté','Informatique / téléphonie','Atelier / production','Transport / logistique','Autre'];
+ function getProfiles(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'[]')}catch(_){return []}}
+ function setProfiles(a){localStorage.setItem(PROFILE_KEY,JSON.stringify(a))}
+ function activeProfile(){const id=localStorage.getItem(ACTIVE_KEY);return getProfiles().find(p=>p.id===id)||null}
+ function applyProfile(p){
+   if(!p)return;
+   const brand=document.querySelector('.brand');
+   if(brand){brand.querySelector('.logo').innerHTML=p.photo?`<img src="${p.photo}" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover;border-radius:12px">`:(p.name||'E').trim().charAt(0).toUpperCase();brand.querySelector('h1').textContent=p.name;brand.querySelector('p').textContent=[p.category,p.city].filter(Boolean).join(' · ');}
+   document.title=p.name+' — Gestion de stock';
+   document.querySelectorAll('h1').forEach(el=>{if(el.textContent.trim()==='Mon Stock')el.textContent=p.name});
+   document.querySelectorAll('.aside-foot div').forEach(el=>{if(el.textContent.includes('Mon Stock · Version'))el.textContent=p.name+' · Version 4.0'});
+   if(window.db){db.settings={...(db.settings||{}),businessName:p.name,managerName:db.settings?.managerName||''};try{saveDB()}catch(_){}}
+ }
+ function accountScreen(mode='choice',message=''){
+   let el=document.getElementById('ms4AccountGate');if(el)el.remove();
+   el=document.createElement('div');el.id='ms4AccountGate';
+   el.style='position:fixed;inset:0;z-index:100000;background:linear-gradient(135deg,#10231df2,#163e31f5);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;font-family:system-ui,Arial,sans-serif';
+   const box='max-width:500px;width:100%;background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #0005;color:#17251f;max-height:95vh;overflow:auto';
+   const field='width:100%;padding:12px;border:1px solid #d4ddd8;border-radius:10px;box-sizing:border-box;background:#fff;color:#17251f';
+   const lab='display:block;font-size:13px;font-weight:650;margin:13px 0 6px;color:#42534b';
+   const btn='width:100%;padding:13px;background:#176b50;color:#fff;border-radius:10px;font-weight:750;margin-top:15px';
+   const categoriesHtml=categories.map(c=>`<option>${c}</option>`).join('');
+   let inner=`<div style="text-align:center;margin-bottom:18px"><div style="margin:auto auto 12px;width:58px;height:58px;border-radius:17px;background:linear-gradient(135deg,#f4b33e,#e78520);display:grid;place-items:center;font-size:28px;font-weight:900;color:#172a23">▤</div><h2 style="margin:0;font-size:25px;color:#17251f!important;-webkit-text-fill-color:#17251f">Bienvenue</h2><p style="margin:7px 0 0;color:#69776f!important;-webkit-text-fill-color:#69776f">Configurez votre espace professionnel</p></div><div style="color:#b42318;min-height:20px;font-size:13px" id="ms4AccountErr">${message}</div>`;
+   if(mode==='choice'){
+     inner+=`<button id="ms4CreateChoice" type="button" style="display:block;width:100%;min-height:52px;padding:14px 16px;background:#176b50!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff;font-size:16px;line-height:1.35;border-radius:10px;font-weight:750;margin-top:15px">Créer un compte entreprise</button><button id="ms4LoginChoice" type="button" style="display:block;width:100%;min-height:52px;padding:14px 16px;background:#edf4f0!important;color:#176b50!important;-webkit-text-fill-color:#176b50;font-size:16px;line-height:1.35;border:1px solid #c8ddd2;border-radius:10px;font-weight:750;margin-top:10px">Se connecter à un compte existant</button><p style="font-size:12px;color:#738078;line-height:1.5;margin:17px 0 0">Les comptes créés dans cette version sont enregistrés sur cet appareil. Pour retrouver votre compte sur plusieurs appareils, un serveur d'authentification devra être configuré.</p>`;
+   } else if(mode==='register'){
+     inner+=`<h3 style="margin:0 0 6px">Créer votre compte</h3><p style="margin:0;color:#69776f;font-size:13px">Les informations de votre entreprise personnaliseront l’application.</p><form id="ms4RegisterForm"><div style="text-align:center;margin:16px 0"><label for="ms4Photo" style="display:inline-flex;align-items:center;gap:12px;cursor:pointer"><span id="ms4PhotoPreview" style="width:70px;height:70px;border-radius:50%;background:#eaf2ee;border:2px dashed #9bb8aa;display:grid;place-items:center;overflow:hidden;font-size:24px">＋</span><span style="text-align:left"><b>Photo de profil</b><br><small style="color:#69776f">Logo ou photo (facultatif)</small></span></label><input id="ms4Photo" type="file" accept="image/*" style="display:none"></div><label style="${lab}">Nom de l’entreprise *</label><input name="name" required maxlength="80" placeholder="Ex. Boutique Faso" style="${field}"><label style="${lab}">Numéro de téléphone *</label><input name="phone" type="tel" required maxlength="25" placeholder="Ex. 70 00 00 00" style="${field}"><label style="${lab}">Ville *</label><input name="city" required maxlength="60" placeholder="Ex. Koudougou" style="${field}"><label style="${lab}">Catégorie d’activité *</label><select name="category" required style="${field}"><option value="">Choisir votre domaine</option>${categoriesHtml}</select><label style="${lab}">Nom du responsable</label><input name="manager" maxlength="80" placeholder="Votre nom (facultatif)" style="${field}"><label style="${lab}">Nom d’utilisateur *</label><input name="username" required minlength="3" maxlength="40" autocomplete="username" placeholder="Ex. faisal" style="${field}"><label style="${lab}">Mot de passe *</label><input name="password" type="password" required minlength="4" autocomplete="new-password" placeholder="Au moins 4 caractères" style="${field}"><button style="${btn}">Créer mon espace</button><button type="button" id="ms4Back" style="${btn}display:block!important;min-height:48px;background:#edf4f0!important;color:#176b50!important;-webkit-text-fill-color:#176b50!important;border:1px solid #c8ddd2!important;margin-top:10px!important;line-height:1.4!important">Retour / Créer un compte</button></form>`;
+   } else {
+     inner+=`<h3 style="margin:0 0 6px">Connexion</h3><p style="margin:0;color:#69776f;font-size:13px">Connectez-vous avec le compte enregistré sur cet appareil.</p><form id="ms4LocalLogin"><label style="${lab}">Nom d’utilisateur</label><input name="username" required autocomplete="username" style="${field}"><label style="${lab}">Mot de passe</label><input name="password" type="password" required autocomplete="current-password" style="${field}"><button style="${btn}">Se connecter</button><button type="button" id="ms4Back" style="${btn}display:block!important;min-height:48px;background:#edf4f0!important;color:#176b50!important;-webkit-text-fill-color:#176b50!important;border:1px solid #c8ddd2!important;margin-top:10px!important;line-height:1.4!important">Retour / Créer un compte</button></form>`;
+   }
+   el.innerHTML=`<div style="${box}">${inner}</div>`;document.body.appendChild(el);
+   el.querySelector('#ms4CreateChoice')?.addEventListener('click',()=>accountScreen('register'));
+   el.querySelector('#ms4LoginChoice')?.addEventListener('click',()=>accountScreen('login'));
+   el.querySelector('#ms4Back')?.addEventListener('click',()=>accountScreen('choice'));
+   let photoData='';
+   el.querySelector('#ms4Photo')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>2*1024*1024){alert('Choisissez une image de moins de 2 Mo.');e.target.value='';return}const rd=new FileReader();rd.onload=()=>{photoData=rd.result;const pr=el.querySelector('#ms4PhotoPreview');pr.innerHTML=`<img src="${photoData}" style="width:100%;height:100%;object-fit:cover">`};rd.readAsDataURL(f)});
+   el.querySelector('#ms4RegisterForm')?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.target);const profiles=getProfiles();const username=String(fd.get('username')).trim().toLowerCase();if(profiles.some(p=>p.username===username)){el.querySelector('#ms4AccountErr').textContent='Ce nom d’utilisateur existe déjà sur cet appareil.';return}const p={id:'biz_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),name:String(fd.get('name')).trim(),phone:String(fd.get('phone')).trim(),city:String(fd.get('city')).trim(),category:String(fd.get('category')),manager:String(fd.get('manager')||'').trim(),username,password:String(fd.get('password')),photo:photoData,createdAt:new Date().toISOString()};profiles.push(p);setProfiles(profiles);localStorage.setItem(ACTIVE_KEY,p.id);if(window.db){db.settings={...(db.settings||{}),businessName:p.name,managerName:p.manager};try{saveDB()}catch(_){}}el.remove();applyProfile(p);});
+   el.querySelector('#ms4LocalLogin')?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.target),username=String(fd.get('username')).trim().toLowerCase(),password=String(fd.get('password'));const p=getProfiles().find(x=>x.username===username&&x.password===password);if(!p){el.querySelector('#ms4AccountErr').textContent='Identifiants incorrects ou compte non disponible dans ce navigateur. Vérifiez le nom et le mot de passe, ou appuyez sur « Retour / Créer un compte » si vous avez ouvert une nouvelle copie du fichier.';return}localStorage.setItem(ACTIVE_KEY,p.id);el.remove();applyProfile(p)});
+ }
+ // Toujours demander un choix de connexion à chaque ouverture du fichier.
+ // Les profils enregistrés et les données métier ne sont pas supprimés.
+ localStorage.removeItem(ACTIVE_KEY);
+ accountScreen('choice');
+})();
+</script>
+
+</body>
+</html>
