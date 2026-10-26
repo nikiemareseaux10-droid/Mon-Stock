@@ -51,6 +51,21 @@ jobs:
       - name: Installer les dépendances
         run: flutter pub get
 
+      - name: Ajouter l'icône de l'application
+        run: |
+          if [ -f icon.png ]; then
+            flutter pub add --dev flutter_launcher_icons
+            cat > flutter_launcher_icons.yaml <<'EOF'
+          flutter_launcher_icons:
+            android: true
+            ios: false
+            image_path: "icon.png"
+          EOF
+            dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
+          else
+            echo "Pas de fichier icon.png : icône par défaut."
+          fi
+
       - name: Construire l'APK
         run: flutter build apk --release
 
